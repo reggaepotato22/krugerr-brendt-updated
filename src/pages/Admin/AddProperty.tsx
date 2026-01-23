@@ -106,7 +106,7 @@ const AddProperty = () => {
               required
               value={formData.title}
               onChange={e => setFormData({...formData, title: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
               placeholder="e.g. Luxury Villa in Kilifi"
             />
           </div>
@@ -117,7 +117,7 @@ const AddProperty = () => {
               <select
                 value={formData.currency}
                 onChange={e => setFormData({...formData, currency: e.target.value})}
-                className="bg-gray-100 border border-gray-200 border-r-0 p-3 rounded-l-sm focus:outline-none"
+                className="bg-primary/20 border border-primary/20 border-r-0 p-3 rounded-l-sm focus:outline-none text-gray-900"
               >
                 <option value="KES">KES</option>
                 <option value="USD">USD</option>
@@ -129,7 +129,7 @@ const AddProperty = () => {
                 required
                 value={formData.price}
                 onChange={e => setFormData({...formData, price: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-200 p-3 rounded-r-sm focus:outline-none focus:border-primary"
+                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-r-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
                 placeholder="0.00"
               />
             </div>
@@ -140,7 +140,7 @@ const AddProperty = () => {
             <select
               value={formData.type}
               onChange={e => setFormData({...formData, type: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
             >
               <option value="Sale">For Sale</option>
               <option value="Rent">For Rent</option>
@@ -154,7 +154,7 @@ const AddProperty = () => {
               required
               value={formData.location}
               onChange={e => setFormData({...formData, location: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
               placeholder="City, Area"
             />
           </div>
@@ -166,7 +166,7 @@ const AddProperty = () => {
                 type="text"
                 value={formData.lat}
                 onChange={e => setFormData({...formData, lat: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
                 placeholder="-1.2921"
               />
             </div>
@@ -176,7 +176,7 @@ const AddProperty = () => {
                 type="text"
                 value={formData.lng}
                 onChange={e => setFormData({...formData, lng: e.target.value})}
-                className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
                 placeholder="36.8219"
               />
             </div>
@@ -192,7 +192,7 @@ const AddProperty = () => {
               type="number"
               value={formData.beds}
               onChange={e => setFormData({...formData, beds: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
             />
           </div>
           <div>
@@ -201,7 +201,7 @@ const AddProperty = () => {
               type="number"
               value={formData.baths}
               onChange={e => setFormData({...formData, baths: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
             />
           </div>
           <div>
@@ -210,7 +210,7 @@ const AddProperty = () => {
               type="number"
               value={formData.sqft}
               onChange={e => setFormData({...formData, sqft: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
             />
           </div>
         </div>
@@ -221,7 +221,7 @@ const AddProperty = () => {
             type="text"
             value={formData.amenities}
             onChange={e => setFormData({...formData, amenities: e.target.value})}
-            className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
             placeholder="Pool, Gym, Security (comma separated)"
           />
         </div>
@@ -232,7 +232,7 @@ const AddProperty = () => {
             rows={4}
             value={formData.description}
             onChange={e => setFormData({...formData, description: e.target.value})}
-            className="w-full bg-gray-50 border border-gray-200 p-3 rounded-sm focus:outline-none focus:border-primary"
+            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
           ></textarea>
         </div>
 

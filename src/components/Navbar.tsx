@@ -43,11 +43,11 @@ const Navbar = () => {
           <Link to="/" className="flex items-center gap-4 group">
             <div className="relative flex items-center justify-center">
               <img 
-                src="/logo.png" 
+                src="/logo-gold.png" 
                 alt="Krugerr Brendt" 
                 className={cn(
-                  "h-12 md:h-16 w-auto object-contain transition-all duration-500 filter brightness-0 invert",
-                  scrolled ? "h-10 md:h-12" : ""
+                  "h-16 md:h-24 w-auto object-contain transition-all duration-500",
+                  scrolled ? "h-12 md:h-16" : ""
                 )}
                 onError={(e) => {
                   e.currentTarget.style.display = 'none';

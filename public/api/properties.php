@@ -29,47 +29,52 @@ if ($method === 'GET') {
 if ($method === 'POST') {
     $data = getInput();
     
-    // Insert Property
-    $query = "INSERT INTO properties 
-              (title, description, price, currency, location, type, status, amenities, beds, baths, sqft, coords_lat, coords_lng) 
-              VALUES 
-              (:title, :description, :price, :currency, :location, :type, :status, :amenities, :beds, :baths, :sqft, :lat, :lng)";
-    
-    $stmt = $conn->prepare($query);
-    
-    // Bind params
-    $amenities = json_encode($data['amenities']);
-    $stmt->bindParam(":title", $data['title']);
-    $stmt->bindParam(":description", $data['description']);
-    $stmt->bindParam(":price", $data['price']);
-    $stmt->bindParam(":currency", $data['currency']);
-    $stmt->bindParam(":location", $data['location']);
-    $stmt->bindParam(":type", $data['type']);
-    $stmt->bindParam(":status", $data['status']);
-    $stmt->bindParam(":amenities", $amenities);
-    $stmt->bindParam(":beds", $data['beds']);
-    $stmt->bindParam(":baths", $data['baths']);
-    $stmt->bindParam(":sqft", $data['sqft']);
-    $stmt->bindParam(":lat", $data['coords'][0]);
-    $stmt->bindParam(":lng", $data['coords'][1]);
-    
-    if ($stmt->execute()) {
-        $property_id = $conn->lastInsertId();
+    try {
+        // Insert Property
+        $query = "INSERT INTO properties 
+                  (title, description, price, currency, location, type, status, amenities, beds, baths, sqft, coords_lat, coords_lng) 
+                  VALUES 
+                  (:title, :description, :price, :currency, :location, :type, :status, :amenities, :beds, :baths, :sqft, :lat, :lng)";
         
-        // Insert Images
-        if (isset($data['image_urls']) && is_array($data['image_urls'])) {
-            $imgQuery = "INSERT INTO property_images (property_id, image_url) VALUES (:pid, :url)";
-            $imgStmt = $conn->prepare($imgQuery);
-            foreach ($data['image_urls'] as $url) {
-                $imgStmt->bindParam(":pid", $property_id);
-                $imgStmt->bindParam(":url", $url);
-                $imgStmt->execute();
+        $stmt = $conn->prepare($query);
+        
+        // Bind params
+        $amenities = json_encode($data['amenities']);
+        $stmt->bindParam(":title", $data['title']);
+        $stmt->bindParam(":description", $data['description']);
+        $stmt->bindParam(":price", $data['price']);
+        $stmt->bindParam(":currency", $data['currency']);
+        $stmt->bindParam(":location", $data['location']);
+        $stmt->bindParam(":type", $data['type']);
+        $stmt->bindParam(":status", $data['status']);
+        $stmt->bindParam(":amenities", $amenities);
+        $stmt->bindParam(":beds", $data['beds']);
+        $stmt->bindParam(":baths", $data['baths']);
+        $stmt->bindParam(":sqft", $data['sqft']);
+        $stmt->bindParam(":lat", $data['coords'][0]);
+        $stmt->bindParam(":lng", $data['coords'][1]);
+        
+        if ($stmt->execute()) {
+            $property_id = $conn->lastInsertId();
+            
+            // Insert Images
+            if (isset($data['image_urls']) && is_array($data['image_urls'])) {
+                $imgQuery = "INSERT INTO property_images (property_id, image_url) VALUES (:pid, :url)";
+                $imgStmt = $conn->prepare($imgQuery);
+                foreach ($data['image_urls'] as $url) {
+                    $imgStmt->bindParam(":pid", $property_id);
+                    $imgStmt->bindParam(":url", $url);
+                    $imgStmt->execute();
+                }
             }
+            
+            echo json_encode(["message" => "Property created", "id" => $property_id]);
+        } else {
+            // Return specific SQL error
+            echo json_encode(["error" => "Failed to create property", "details" => $stmt->errorInfo()]);
         }
-        
-        echo json_encode(["message" => "Property created", "id" => $property_id]);
-    } else {
-        echo json_encode(["error" => "Failed to create property"]);
+    } catch (PDOException $e) {
+        echo json_encode(["error" => "Database Exception", "details" => $e->getMessage()]);
     }
 }
 ?>

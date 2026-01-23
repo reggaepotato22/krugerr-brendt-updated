@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { api } from '../lib/api';
+import { supabase } from '../lib/supabase';
 
-// Simple User Interface matching the PHP API response
 export interface User {
   id: string;
   email: string;
@@ -13,7 +12,7 @@ interface AuthContextType {
   loading: boolean;
   isAdmin: boolean;
   login: (email: string, pass: string) => Promise<void>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,32 +21,72 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Check local storage for existing session
-    const storedUser = localStorage.getItem('kb_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        localStorage.removeItem('kb_user');
+  const fetchProfile = async (userId: string, email: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (error || !data) {
+        // Fallback: Check if user metadata has role, or default based on email
+        // This is a temporary fallback to ensure access if the profiles table is empty
+        setUser({
+            id: userId,
+            email: email,
+            role: email.includes('admin') ? 'admin' : 'user' 
+        });
+      } else {
+        setUser({
+            id: data.id,
+            email: data.email,
+            role: data.role
+        });
       }
-    }
-    setLoading(false);
-  }, []);
-
-  const login = async (email: string, pass: string) => {
-    // Call PHP API
-    const data = await api.login(email, pass);
-    if (data.token && data.user) {
-      setUser(data.user);
-      localStorage.setItem('kb_user', JSON.stringify(data.user));
-      localStorage.setItem('kb_token', data.token);
+    } catch (e) {
+        console.error("Profile fetch error", e);
+        setUser({ id: userId, email, role: 'user' });
+    } finally {
+        setLoading(false);
     }
   };
 
-  const signOut = () => {
+  useEffect(() => {
+    // Check active session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+         fetchProfile(session.user.id, session.user.email!);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+         fetchProfile(session.user.id, session.user.email!);
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, pass: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password: pass,
+    });
+
+    if (error) throw error;
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem('kb_user');
+    localStorage.removeItem('kb_user'); // Cleanup legacy local storage if present
     localStorage.removeItem('kb_token');
   };
 

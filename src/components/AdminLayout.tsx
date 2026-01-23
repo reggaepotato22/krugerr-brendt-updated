@@ -18,14 +18,14 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
-  const { session, isAdmin, loading, signOut } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!loading) {
-      if (!session) {
+      if (!user) {
         navigate('/admin/login');
       } else if (!isAdmin) {
         // Optional: Redirect non-admins or show access denied
@@ -33,7 +33,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         navigate('/');
       }
     }
-  }, [session, isAdmin, loading, navigate]);
+  }, [user, isAdmin, loading, navigate]);
 
   if (loading) {
     return (
@@ -49,7 +49,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: '/admin', icon: LayoutDashboard, label: 'Overview' },
     { path: '/admin/properties', icon: Building2, label: 'All Properties' },
     { path: '/admin/properties/add', icon: PlusCircle, label: 'Add New' },
-    { path: '/admin/inquiries', icon: MessageSquare, label: 'Leads/Inquiries' },
+    { path: '/admin/leads', icon: MessageSquare, label: 'Leads Management' },
   ];
 
   return (
@@ -97,7 +97,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
           <button
-            onClick={() => signOut()}
+            onClick={() => {
+              signOut();
+              navigate('/');
+            }}
             className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-white/5 w-full rounded-sm transition-colors text-sm font-medium tracking-wide uppercase"
           >
             <LogOut className="w-4 h-4" />

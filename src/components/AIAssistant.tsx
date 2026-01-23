@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageSquare, X, Send, User, Bot, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { api } from '../lib/api';
 
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,12 +55,13 @@ const AIAssistant = () => {
 
   const notifyBackend = async (msg: string) => {
     try {
-      await fetch('/send_notification.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: msg }),
+      // Use the unified API to save to DB and send email via SMTP
+      await api.sendInquiry({
+        customer_name: "AI Assistant Guest",
+        email: "ai-guest@krugerrbrendt.com", // Placeholder since we don't capture email in chat yet
+        message: msg,
+        subject: "AI Assistant Conversation",
+        property_id: null
       });
       // We don't alert the user on success/failure to avoid interrupting the UX
       // The WhatsApp action is the primary feedback

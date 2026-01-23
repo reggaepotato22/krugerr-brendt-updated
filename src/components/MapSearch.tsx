@@ -1,39 +1,59 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { Icon } from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { Icon, DivIcon, LatLngBoundsExpression } from 'leaflet';
 import { useProperties } from '../hooks/useProperties';
 import { Link } from 'react-router-dom';
-import { MapPin, ArrowRight } from 'lucide-react';
+import { MapPin, ArrowRight, Building2, Star } from 'lucide-react';
+import { useEffect } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 
-// Fix for default marker icons in React Leaflet
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+// Create custom DivIcons using Lucide React components
+const createCustomIcon = (icon: JSX.Element, color: string, size: number = 32) => {
+  const html = renderToStaticMarkup(
+    <div className="relative flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-110">
+      <div className={`relative z-10 p-2 rounded-full shadow-lg ${color} text-white`}>
+        {icon}
+      </div>
+      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-current text-gray-800 opacity-50"></div>
+    </div>
+  );
 
-const DefaultIcon = new Icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
+  return new DivIcon({
+    html,
+    className: 'custom-marker-icon', // Use a custom class to avoid default styles
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size], // Center bottom
+    popupAnchor: [0, -size], // Above the icon
+  });
+};
 
-// Custom Gold Icon for Head Office
-const HeadOfficeIcon = new Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+const HeadOfficeIcon = createCustomIcon(<Star size={20} fill="currentColor" />, 'bg-primary');
+const PropertyIcon = createCustomIcon(<Building2 size={18} />, 'bg-blue-600');
 
-// Blue Icon for Properties
-const PropertyIcon = new Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+// Component to handle map bounds
+const MapController = ({ 
+  headOfficeCoords, 
+  properties 
+}: { 
+  headOfficeCoords: [number, number], 
+  properties: any[] 
+}) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const points: [number, number][] = [headOfficeCoords];
+    
+    properties.forEach(p => {
+      if (p.coords) points.push(p.coords);
+    });
+
+    if (points.length > 0) {
+      const bounds: LatLngBoundsExpression = points;
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+    }
+  }, [map, headOfficeCoords, properties]);
+
+  return null;
+};
 
 const MapSearch = () => {
   const { properties } = useProperties();
@@ -43,12 +63,14 @@ const MapSearch = () => {
   return (
     <div className="w-full h-[600px] relative z-0">
       <MapContainer 
-        center={[-1.2921, 36.8219]} // Start centered on Kenya roughly
+        center={headOfficeCoords}
         zoom={6} 
         scrollWheelZoom={false}
         className="w-full h-full rounded-sm z-0"
         style={{ height: "100%", width: "100%", zIndex: 0 }}
       >
+        <MapController headOfficeCoords={headOfficeCoords} properties={properties} />
+        
         {/* Dark Theme Map Tiles */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -67,6 +89,7 @@ const MapSearch = () => {
               </div>
               <p className="text-gray-600 text-sm mb-1">Krugerr Brendt International</p>
               <p className="text-gray-500 text-xs">Kilifi, Kenya</p>
+              <div className="mt-2 text-xs text-primary font-bold uppercase tracking-wide">Global Headquarters</div>
             </div>
           </Popup>
         </Marker>
@@ -107,16 +130,20 @@ const MapSearch = () => {
       </MapContainer>
       
       {/* Legend / Overlay */}
-      <div className="absolute bottom-4 right-4 z-[400] bg-white/90 backdrop-blur-sm p-3 rounded-sm shadow-lg border border-gray-100 max-w-xs">
-        <h4 className="font-serif font-bold text-secondary mb-2 text-sm">Map Legend</h4>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png" className="w-4 h-6" alt="Head Office" />
-            <span className="text-xs text-gray-600">Head Office (Kilifi)</span>
+      <div className="absolute bottom-4 right-4 z-[400] bg-white/90 backdrop-blur-sm p-4 rounded-sm shadow-lg border border-gray-100 max-w-xs">
+        <h4 className="font-serif font-bold text-secondary mb-3 text-sm border-b border-gray-200 pb-2">Map Legend</h4>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-sm">
+               <Star size={14} fill="currentColor" />
+            </div>
+            <span className="text-xs font-medium text-gray-700">Head Office (Kilifi)</span>
           </div>
-          <div className="flex items-center gap-2">
-            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png" className="w-4 h-6" alt="Property" />
-            <span className="text-xs text-gray-600">Available Properties</span>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm">
+               <Building2 size={14} />
+            </div>
+            <span className="text-xs font-medium text-gray-700">Available Properties</span>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
-import { saveLead } from '../../services/crm';
+import { api } from '../../lib/api';
 
 interface InquiryFormProps {
   propertyId?: string;
@@ -17,28 +17,28 @@ const InquiryForm = ({ propertyId, propertyTitle }: InquiryFormProps) => {
   });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
     
-    // Simulate network delay for better UX
-    setTimeout(() => {
-      try {
-        saveLead({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          message: formData.message,
-          propertyId,
-          propertyTitle
-        });
-        setStatus('success');
-        setFormData({ name: '', email: '', phone: '', message: '' });
-      } catch (error) {
-        console.error(error);
-        setStatus('error');
-      }
-    }, 1000);
+    try {
+      // Append phone to message since DB doesn't have a phone column yet
+      const fullMessage = `${formData.message}\n\nPhone: ${formData.phone}`;
+      
+      await api.sendInquiry({
+        customer_name: formData.name,
+        email: formData.email,
+        message: fullMessage,
+        subject: `Inquiry for ${propertyTitle || 'Property'}`,
+        property_id: propertyId
+      });
+      
+      setStatus('success');
+      setFormData({ name: '', email: '', phone: '', message: '' });
+    } catch (error) {
+      console.error(error);
+      setStatus('error');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
+import { api } from '../lib/api';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
 const ContactPage = () => {
@@ -21,14 +22,25 @@ const ContactPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitStatus('idle');
     
-    // Simulate sending email
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await api.sendInquiry({
+        customer_name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      });
+      
       setSubmitStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
       setTimeout(() => setSubmitStatus('idle'), 5000);
-    }, 1500);
+    } catch (error) {
+      console.error("Failed to send message", error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -137,7 +149,7 @@ const ContactPage = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
+                    className="w-full px-4 py-3 bg-primary/10 border border-primary/30 text-gray-900 rounded-sm focus:bg-white focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder-gray-500"
                     placeholder="John Doe"
                   />
                 </div>
@@ -150,7 +162,7 @@ const ContactPage = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
+                    className="w-full px-4 py-3 bg-primary/10 border border-primary/30 text-gray-900 rounded-sm focus:bg-white focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder-gray-500"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -165,7 +177,7 @@ const ContactPage = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
+                  className="w-full px-4 py-3 bg-primary/10 border border-primary/30 text-gray-900 rounded-sm focus:bg-white focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder-gray-500"
                   placeholder="Property Inquiry"
                 />
               </div>
@@ -179,7 +191,7 @@ const ContactPage = () => {
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all resize-none"
+                  className="w-full px-4 py-3 bg-primary/10 border border-primary/30 text-gray-900 rounded-sm focus:bg-white focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder-gray-500 resize-none"
                   placeholder="I'm interested in..."
                 ></textarea>
               </div>
@@ -196,6 +208,12 @@ const ContactPage = () => {
               {submitStatus === 'success' && (
                 <div className="p-4 bg-green-50 text-green-700 rounded-sm border border-green-200">
                   Message sent successfully! We will get back to you soon.
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className="p-4 bg-red-50 text-red-700 rounded-sm border border-red-200">
+                  Failed to send message. Please try again later or contact us directly via phone/email.
                 </div>
               )}
             </form>

@@ -20,6 +20,7 @@ import AdminDashboard from './pages/Admin/Dashboard';
 import AdminProperties from './pages/Admin/Properties';
 import AddProperty from './pages/Admin/AddProperty';
 import AdminInquiries from './pages/Admin/Inquiries';
+import Leads from './pages/Admin/Leads';
 
 function App() {
   return (
@@ -61,6 +62,12 @@ function App() {
             <Route path="/admin/inquiries" element={
               <AdminLayout>
                 <AdminInquiries />
+              </AdminLayout>
+            } />
+            
+            <Route path="/admin/leads" element={
+              <AdminLayout>
+                <Leads />
               </AdminLayout>
             } />
 
