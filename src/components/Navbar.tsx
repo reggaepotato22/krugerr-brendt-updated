@@ -38,7 +38,30 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           
-          {/* Left Nav */}
+          {/* Left: Logo & Text */}
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="relative flex items-center justify-center">
+              <img 
+                src="/krugerr-brendt-logo.png" 
+                alt="Krugerr Brendt" 
+                className={cn(
+                  "h-12 md:h-16 w-auto object-contain transition-all duration-500",
+                  scrolled ? "h-10 md:h-12" : ""
+                )}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+              <span className="hidden text-2xl font-serif text-white tracking-widest border-2 border-white p-2">KB</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-lg md:text-xl font-serif text-white tracking-[0.2em] group-hover:text-primary transition-colors">KRUGERR BRENDT</span>
+              <span className="text-[10px] md:text-xs font-medium text-primary tracking-[0.3em] uppercase hidden md:block">Real Estate</span>
+            </div>
+          </Link>
+
+          {/* Right: Nav Links */}
           <div className="hidden md:flex items-center gap-8">
             <Link to="/buy" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
               Buy
@@ -46,31 +69,6 @@ const Navbar = () => {
             <Link to="/rent" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
               Rent
             </Link>
-          </div>
-
-          {/* Center Logo */}
-          <Link to="/" className="flex flex-col items-center group">
-            {/* Logo Image Placeholder - In production this would be <img src="/logo.png" /> */}
-            <div className="relative flex items-center justify-center">
-              <img 
-                src="/logo.png" 
-                alt="Krugerr Brendt" 
-                className={cn(
-                  "h-12 md:h-16 w-auto object-contain transition-all duration-500 filter brightness-0 invert", // Invert to make it white if needed, or remove filter if logo is already correct
-                  scrolled ? "h-10 md:h-12" : ""
-                )}
-                onError={(e) => {
-                  // Fallback if image not found
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                }}
-              />
-              <span className="hidden text-2xl font-serif text-white tracking-widest border-2 border-white p-2">KB</span>
-            </div>
-          </Link>
-
-          {/* Right Nav */}
-          <div className="hidden md:flex items-center gap-8">
             <Link to="/new-projects" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
               New Projects
             </Link>

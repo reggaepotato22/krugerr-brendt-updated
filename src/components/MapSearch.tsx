@@ -1,44 +1,176 @@
-import { Map } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ArrowRight, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
+interface PropertyLocation {
+  id: string;
+  title: string;
+  location: string;
+  price: string;
+  coords: [number, number];
+  image: string;
+}
+
+const properties: PropertyLocation[] = [
+  {
+    id: '1',
+    title: 'Bofa Beach Villa',
+    location: 'Kilifi, Kenya',
+    price: 'KES 85,000,000',
+    coords: [-3.6307, 39.8499],
+    image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=2070&auto=format&fit=crop'
+  },
+  {
+    id: '2',
+    title: 'Muthaiga Sovereign Estate',
+    location: 'Nairobi, Kenya',
+    price: 'KES 450,000,000',
+    coords: [-1.2543, 36.8379],
+    image: 'https://images.unsplash.com/photo-1600596542815-e32c630bd1ba?q=80&w=2074&auto=format&fit=crop'
+  },
+  {
+    id: '3',
+    title: 'Palm Jumeirah Penthouse',
+    location: 'Dubai, UAE',
+    price: '$ 12,500,000',
+    coords: [25.1124, 55.1390],
+    image: 'https://images.unsplash.com/photo-1512453979798-5ea904ac66de?q=80&w=2009&auto=format&fit=crop'
+  },
+  {
+    id: '4',
+    title: 'Mayfair Townhouse',
+    location: 'London, UK',
+    price: '£ 8,500,000',
+    coords: [51.5074, -0.1278],
+    image: 'https://images.unsplash.com/photo-1513584685908-2274653dbf29?q=80&w=2070&auto=format&fit=crop'
+  }
+];
 
 const MapSearch = () => {
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyLocation | null>(null);
+
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+    
+    try {
+      // Check if Leaflet is available on window
+      const L = (window as any).L;
+      if (!L) {
+        console.warn('Leaflet not loaded, map disabled');
+        return;
+      }
+
+      // Initialize map if not already initialized
+      if (!mapInstanceRef.current) {
+        const map = L.map(mapContainerRef.current).setView([20, 0], 2);
+        
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 19
+        }).addTo(map);
+
+        // Custom icon
+        const customIcon = L.icon({
+          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+        });
+
+        // Add markers
+        if (Array.isArray(properties)) {
+          properties.forEach((prop) => {
+            const marker = L.marker(prop.coords, { icon: customIcon }).addTo(map);
+            marker.on('click', () => {
+              setSelectedProperty(prop);
+              map.flyTo(prop.coords, 10, {
+                duration: 1.5
+              });
+            });
+          });
+        }
+
+        mapInstanceRef.current = map;
+      }
+    } catch (error) {
+      console.error('Error initializing map:', error);
+    }
+
+    return () => {
+      // Cleanup if needed (Leaflet handles most cleanup)
+    };
+  }, []);
+
   return (
-    <section className="py-24 bg-white overflow-hidden">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row gap-12 items-center">
-          <div className="w-full md:w-1/2">
-            <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-6">Search by Map</h2>
-            <p className="text-gray-500 mb-8 text-lg leading-relaxed">
-              Find your perfect property by location. Our interactive map allows you to explore neighborhoods, view nearby amenities, and discover exclusive listings in your desired area.
-            </p>
-            <button className="bg-secondary hover:bg-primary text-white font-medium py-4 px-8 transition-colors duration-300 flex items-center gap-2 uppercase tracking-wide text-sm">
-              <Map className="w-4 h-4" />
-              Open Interactive Map
-            </button>
-          </div>
-          
-          <div className="w-full md:w-1/2 relative">
-            <div className="aspect-video bg-gray-100 rounded-sm overflow-hidden relative group cursor-pointer">
-              {/* Placeholder Map Image */}
-              <img 
-                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop" 
-                alt="Map Search" 
-                className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white/90 backdrop-blur-sm p-4 rounded-full shadow-lg transform group-hover:scale-110 transition-transform duration-300">
-                  <Map className="w-8 h-8 text-primary" />
+    <div className="relative w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+      <div ref={mapContainerRef} className="w-full h-full z-0" />
+      
+      {/* Overlay Instructions */}
+      <div className="absolute top-4 left-4 z-[1000] bg-white/90 backdrop-blur-sm px-4 py-2 rounded-sm shadow-md">
+        <p className="text-xs font-bold text-secondary tracking-widest uppercase">
+          Explore Global Properties
+        </p>
+      </div>
+
+      {/* Property Preview Card */}
+      <AnimatePresence>
+        {selectedProperty && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.9 }}
+            transition={{ type: "spring", damping: 20 }}
+            className="absolute bottom-8 left-4 right-4 md:left-auto md:right-8 md:w-80 z-[1000]"
+          >
+            <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
+              <div className="relative h-40">
+                <img 
+                  src={selectedProperty.image} 
+                  alt={selectedProperty.title} 
+                  className="w-full h-full object-cover"
+                />
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedProperty(null);
+                  }}
+                  className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <h3 className="font-serif text-lg text-secondary leading-tight">{selectedProperty.title}</h3>
+                    <div className="flex items-center gap-1 text-gray-500 mt-1">
+                      <MapPin size={12} />
+                      <span className="text-xs">{selectedProperty.location}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="font-bold text-primary text-sm">{selectedProperty.price}</span>
+                  <Link 
+                    to={`/property/${selectedProperty.id}`}
+                    className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+                  >
+                    View Details <ArrowRight size={12} />
+                  </Link>
                 </div>
               </div>
-              
-              {/* Decorative Pins */}
-              <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-primary rounded-full animate-pulse" />
-              <div className="absolute top-1/2 right-1/3 w-3 h-3 bg-primary rounded-full animate-pulse delay-100" />
-              <div className="absolute bottom-1/3 left-1/2 w-3 h-3 bg-primary rounded-full animate-pulse delay-200" />
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 

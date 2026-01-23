@@ -1,9 +1,19 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Home, DollarSign, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const SmartSearch = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'buy' | 'rent'>('buy');
+
+  const handleSearch = () => {
+    if (activeTab === 'buy') {
+      navigate('/buy');
+    } else {
+      navigate('/rent');
+    }
+  };
 
   return (
     <motion.div 
@@ -79,7 +89,10 @@ const SmartSearch = () => {
           </div>
         </div>
 
-        <button className="w-full bg-secondary hover:bg-primary text-white font-medium py-3 px-6 transition-colors duration-300 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
+        <button 
+          onClick={handleSearch}
+          className="w-full bg-secondary hover:bg-primary text-white font-medium py-3 px-6 transition-colors duration-300 flex items-center justify-center gap-2 uppercase tracking-wide text-sm"
+        >
           <Search className="w-4 h-4" />
           Search
         </button>
