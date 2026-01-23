@@ -1,10 +1,11 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PropertyCard from '../components/PropertyCard';
-import { properties } from '../data/properties';
+import { useProperties } from '../hooks/useProperties';
 import { motion } from 'framer-motion';
 
 const BuyPage = () => {
+  const { properties, loading } = useProperties();
   const saleProperties = properties.filter(p => p.type === 'Sale');
 
   return (

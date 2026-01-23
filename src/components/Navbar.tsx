@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import CurrencySelector from './CurrencySelector';
 
 const cn = (...inputs: (string | undefined | null | false)[]) => twMerge(clsx(inputs));
 
@@ -26,6 +27,7 @@ const Navbar = () => {
     { name: 'Rent', href: '/rent' },
     { name: 'New Projects', href: '/new-projects' },
     { name: 'Contact', href: '/contact' },
+    { name: 'CRM', href: '/crm' },
   ];
 
   return (
@@ -37,15 +39,14 @@ const Navbar = () => {
         )}
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-          
-          {/* Left: Logo & Text */}
+          {/* Brand: Logo + Text */}
           <Link to="/" className="flex items-center gap-4 group">
             <div className="relative flex items-center justify-center">
               <img 
-                src="/krugerr-brendt-logo.png" 
+                src="/logo.png" 
                 alt="Krugerr Brendt" 
                 className={cn(
-                  "h-12 md:h-16 w-auto object-contain transition-all duration-500",
+                  "h-12 md:h-16 w-auto object-contain transition-all duration-500 filter brightness-0 invert",
                   scrolled ? "h-10 md:h-12" : ""
                 )}
                 onError={(e) => {
@@ -55,13 +56,13 @@ const Navbar = () => {
               />
               <span className="hidden text-2xl font-serif text-white tracking-widest border-2 border-white p-2">KB</span>
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-serif text-white tracking-[0.2em] group-hover:text-primary transition-colors">KRUGERR BRENDT</span>
-              <span className="text-[10px] md:text-xs font-medium text-primary tracking-[0.3em] uppercase hidden md:block">Real Estate</span>
+            <div className="flex flex-col items-start">
+               <span className="text-lg md:text-xl font-serif text-white tracking-[0.2em] group-hover:text-primary transition-colors uppercase">KRUGERR BRENDT</span>
+               <span className="text-[10px] md:text-xs font-medium text-primary tracking-[0.3em] uppercase">Real Estate</span>
             </div>
           </Link>
 
-          {/* Right: Nav Links */}
+          {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-8">
             <Link to="/buy" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
               Buy
@@ -75,15 +76,25 @@ const Navbar = () => {
             <Link to="/contact" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
               Contact
             </Link>
+            <Link to="/crm" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
+              CRM
+            </Link>
+            
+            <div className="h-4 w-px bg-white/20 mx-2" />
+            
+            <CurrencySelector />
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden text-white hover:text-primary transition-colors"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="md:hidden flex items-center gap-4">
+             <CurrencySelector />
+             <button 
+              className="text-white hover:text-primary transition-colors ml-auto"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </nav>
 

@@ -2,6 +2,7 @@ import { useState, MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
 
 export interface Property {
   id: string;
@@ -17,6 +18,7 @@ export interface Property {
 
 const PropertyCard = ({ property }: { property: Property }) => {
   const [currentImage, setCurrentImage] = useState(0);
+  const { formatPrice } = useCurrency();
 
   const nextImage = (e: MouseEvent) => {
     e.preventDefault();
@@ -95,7 +97,7 @@ const PropertyCard = ({ property }: { property: Property }) => {
               <span className="text-white font-medium">{property.baths}</span> Baths
             </div>
           </div>
-          <p className="text-primary font-serif text-lg tracking-wide">{property.price}</p>
+          <p className="text-primary font-serif text-lg tracking-wide">{formatPrice(property.price)}</p>
         </div>
       </div>
     </div>

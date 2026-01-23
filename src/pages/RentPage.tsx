@@ -1,10 +1,11 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PropertyCard from '../components/PropertyCard';
+import { useProperties } from '../hooks/useProperties';
 import { motion } from 'framer-motion';
-import { properties } from '../data/properties';
 
 const RentPage = () => {
+  const { properties, loading } = useProperties();
   const rentProperties = properties.filter(p => p.type === 'Rent');
 
   return (

@@ -1,175 +1,125 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowRight, MapPin } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Icon } from 'leaflet';
+import { useProperties } from '../hooks/useProperties';
 import { Link } from 'react-router-dom';
+import { MapPin, ArrowRight } from 'lucide-react';
 
-interface PropertyLocation {
-  id: string;
-  title: string;
-  location: string;
-  price: string;
-  coords: [number, number];
-  image: string;
-}
+// Fix for default marker icons in React Leaflet
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-const properties: PropertyLocation[] = [
-  {
-    id: '1',
-    title: 'Bofa Beach Villa',
-    location: 'Kilifi, Kenya',
-    price: 'KES 85,000,000',
-    coords: [-3.6307, 39.8499],
-    image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=2070&auto=format&fit=crop'
-  },
-  {
-    id: '2',
-    title: 'Muthaiga Sovereign Estate',
-    location: 'Nairobi, Kenya',
-    price: 'KES 450,000,000',
-    coords: [-1.2543, 36.8379],
-    image: 'https://images.unsplash.com/photo-1600596542815-e32c630bd1ba?q=80&w=2074&auto=format&fit=crop'
-  },
-  {
-    id: '3',
-    title: 'Palm Jumeirah Penthouse',
-    location: 'Dubai, UAE',
-    price: '$ 12,500,000',
-    coords: [25.1124, 55.1390],
-    image: 'https://images.unsplash.com/photo-1512453979798-5ea904ac66de?q=80&w=2009&auto=format&fit=crop'
-  },
-  {
-    id: '4',
-    title: 'Mayfair Townhouse',
-    location: 'London, UK',
-    price: '£ 8,500,000',
-    coords: [51.5074, -0.1278],
-    image: 'https://images.unsplash.com/photo-1513584685908-2274653dbf29?q=80&w=2070&auto=format&fit=crop'
-  }
-];
+const DefaultIcon = new Icon({
+    iconUrl: icon,
+    shadowUrl: iconShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+});
+
+// Custom Gold Icon for Head Office
+const HeadOfficeIcon = new Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+// Blue Icon for Properties
+const PropertyIcon = new Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
 
 const MapSearch = () => {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const [selectedProperty, setSelectedProperty] = useState<PropertyLocation | null>(null);
-
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
-    
-    try {
-      // Check if Leaflet is available on window
-      const L = (window as any).L;
-      if (!L) {
-        console.warn('Leaflet not loaded, map disabled');
-        return;
-      }
-
-      // Initialize map if not already initialized
-      if (!mapInstanceRef.current) {
-        const map = L.map(mapContainerRef.current).setView([20, 0], 2);
-        
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          subdomains: 'abcd',
-          maxZoom: 19
-        }).addTo(map);
-
-        // Custom icon
-        const customIcon = L.icon({
-          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-          iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41]
-        });
-
-        // Add markers
-        if (Array.isArray(properties)) {
-          properties.forEach((prop) => {
-            const marker = L.marker(prop.coords, { icon: customIcon }).addTo(map);
-            marker.on('click', () => {
-              setSelectedProperty(prop);
-              map.flyTo(prop.coords, 10, {
-                duration: 1.5
-              });
-            });
-          });
-        }
-
-        mapInstanceRef.current = map;
-      }
-    } catch (error) {
-      console.error('Error initializing map:', error);
-    }
-
-    return () => {
-      // Cleanup if needed (Leaflet handles most cleanup)
-    };
-  }, []);
+  const { properties } = useProperties();
+  // Kilifi Coordinates (Head Office)
+  const headOfficeCoords: [number, number] = [-3.6307, 39.8499];
 
   return (
-    <div className="relative w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden shadow-xl">
-      <div ref={mapContainerRef} className="w-full h-full z-0" />
-      
-      {/* Overlay Instructions */}
-      <div className="absolute top-4 left-4 z-[1000] bg-white/90 backdrop-blur-sm px-4 py-2 rounded-sm shadow-md">
-        <p className="text-xs font-bold text-secondary tracking-widest uppercase">
-          Explore Global Properties
-        </p>
-      </div>
+    <div className="w-full h-[600px] relative z-0">
+      <MapContainer 
+        center={[-1.2921, 36.8219]} // Start centered on Kenya roughly
+        zoom={6} 
+        scrollWheelZoom={false}
+        className="w-full h-full rounded-sm z-0"
+        style={{ height: "100%", width: "100%", zIndex: 0 }}
+      >
+        {/* Dark Theme Map Tiles */}
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        />
 
-      {/* Property Preview Card */}
-      <AnimatePresence>
-        {selectedProperty && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            transition={{ type: "spring", damping: 20 }}
-            className="absolute bottom-8 left-4 right-4 md:left-auto md:right-8 md:w-80 z-[1000]"
-          >
-            <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
-              <div className="relative h-40">
-                <img 
-                  src={selectedProperty.image} 
-                  alt={selectedProperty.title} 
-                  className="w-full h-full object-cover"
-                />
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedProperty(null);
-                  }}
-                  className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
-                >
-                  <X size={16} />
-                </button>
+        {/* Head Office Marker */}
+        <Marker position={headOfficeCoords} icon={HeadOfficeIcon}>
+          <Popup className="custom-popup">
+            <div className="p-2 min-w-[200px]">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="bg-primary/10 p-1.5 rounded-full">
+                  <MapPin className="w-4 h-4 text-primary" />
+                </div>
+                <h3 className="font-serif font-bold text-secondary text-lg">Head Office</h3>
               </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    <h3 className="font-serif text-lg text-secondary leading-tight">{selectedProperty.title}</h3>
-                    <div className="flex items-center gap-1 text-gray-500 mt-1">
-                      <MapPin size={12} />
-                      <span className="text-xs">{selectedProperty.location}</span>
+              <p className="text-gray-600 text-sm mb-1">Krugerr Brendt International</p>
+              <p className="text-gray-500 text-xs">Kilifi, Kenya</p>
+            </div>
+          </Popup>
+        </Marker>
+
+        {/* Property Markers */}
+        {properties.map((property) => (
+          property.coords && (
+            <Marker 
+              key={property.id} 
+              position={property.coords} 
+              icon={PropertyIcon}
+            >
+              <Popup>
+                <div className="p-1 min-w-[200px]">
+                  <div className="relative h-24 mb-2 overflow-hidden rounded-sm">
+                    <img 
+                      src={property.images[0]} 
+                      alt={property.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded-sm">
+                      {property.type}
                     </div>
                   </div>
-                </div>
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="font-bold text-primary text-sm">{selectedProperty.price}</span>
+                  <h3 className="font-bold text-secondary text-sm mb-1 line-clamp-1">{property.title}</h3>
+                  <p className="text-primary font-serif text-sm mb-2">{property.price}</p>
                   <Link 
-                    to={`/property/${selectedProperty.id}`}
-                    className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+                    to={`/property/${property.id}`}
+                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-primary transition-colors uppercase tracking-wider font-medium"
                   >
-                    View Details <ArrowRight size={12} />
+                    View Details <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </Popup>
+            </Marker>
+          )
+        ))}
+      </MapContainer>
+      
+      {/* Legend / Overlay */}
+      <div className="absolute bottom-4 right-4 z-[400] bg-white/90 backdrop-blur-sm p-3 rounded-sm shadow-lg border border-gray-100 max-w-xs">
+        <h4 className="font-serif font-bold text-secondary mb-2 text-sm">Map Legend</h4>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png" className="w-4 h-6" alt="Head Office" />
+            <span className="text-xs text-gray-600">Head Office (Kilifi)</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png" className="w-4 h-6" alt="Property" />
+            <span className="text-xs text-gray-600">Available Properties</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

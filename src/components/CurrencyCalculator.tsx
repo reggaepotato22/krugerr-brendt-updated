@@ -45,7 +45,7 @@ const CurrencyCalculator = () => {
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-serif text-secondary font-bold flex items-center gap-2">
           <RefreshCw className="w-4 h-4 text-primary" />
-          Currency Converter
+          Currency Calculator
         </h3>
         {loading && <span className="text-xs text-gray-400 animate-pulse">Updating rates...</span>}
       </div>

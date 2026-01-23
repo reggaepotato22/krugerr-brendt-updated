@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { MapPin, Bed, Bath, Square, ArrowLeft } from 'lucide-react';
 import { getPropertyById, Property } from '../data/properties';
+import { useCurrency } from '../context/CurrencyContext';
 
 import InquiryForm from '../components/CRM/InquiryForm';
 import CurrencyCalculator from '../components/CurrencyCalculator';
@@ -12,6 +13,7 @@ const PropertyDetails = () => {
   const { id } = useParams();
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -134,7 +136,7 @@ const PropertyDetails = () => {
             <div className="bg-gray-50 p-6 md:p-8 rounded-lg border border-gray-100 sticky top-24 space-y-8">
               <div>
                 <span className="text-gray-500 text-sm uppercase tracking-wide block mb-1">Price</span>
-                <span className="text-3xl font-serif text-primary">{property.price}</span>
+                <span className="text-3xl font-serif text-primary">{formatPrice(property.price)}</span>
               </div>
               
               <InquiryForm propertyId={property.id} propertyTitle={property.title} />
