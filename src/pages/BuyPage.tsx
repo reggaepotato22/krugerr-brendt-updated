@@ -5,7 +5,7 @@ import { useProperties } from '../hooks/useProperties';
 import { motion } from 'framer-motion';
 
 const BuyPage = () => {
-  const { properties, loading } = useProperties();
+  const { properties } = useProperties();
   const saleProperties = properties.filter(p => p.type === 'Sale');
 
   return (

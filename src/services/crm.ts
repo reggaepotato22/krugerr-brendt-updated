@@ -8,7 +8,7 @@ export interface Lead {
   propertyId?: string;
   propertyTitle?: string;
   date: string;
-  status: 'New' | 'Contacted' | 'Closed';
+  status: 'new' | 'contacted' | 'closed';
 }
 
 const STORAGE_KEY = 'kb_crm_leads';
@@ -24,7 +24,7 @@ export const saveLead = (lead: Omit<Lead, 'id' | 'date' | 'status'>): Lead => {
     ...lead,
     id: crypto.randomUUID(),
     date: new Date().toISOString(),
-    status: 'New'
+    status: 'new'
   };
   leads.unshift(newLead);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));

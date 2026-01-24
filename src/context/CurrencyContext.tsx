@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getExchangeRates, ExchangeRates } from '../services/currency';
 
 export type Currency = 'KES' | 'USD' | 'GBP' | 'EUR';

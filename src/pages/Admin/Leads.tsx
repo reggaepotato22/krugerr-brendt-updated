@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Mail, Phone, ExternalLink, MessageSquare, Clock, CheckCircle, XCircle, AlertCircle, Eye } from 'lucide-react';
+import { Search, Mail, ExternalLink, MessageSquare, CheckCircle, XCircle, AlertCircle, Eye } from 'lucide-react';
 import { api } from '../../lib/api';
 
 interface Lead {

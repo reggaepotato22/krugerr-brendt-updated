@@ -27,7 +27,6 @@ const Navbar = () => {
     { name: 'Rent', href: '/rent' },
     { name: 'New Projects', href: '/new-projects' },
     { name: 'Contact', href: '/contact' },
-    { name: 'CRM', href: '/crm' },
   ];
 
   return (
@@ -75,9 +74,6 @@ const Navbar = () => {
             </Link>
             <Link to="/contact" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
               Contact
-            </Link>
-            <Link to="/crm" className="text-xs font-medium tracking-widest text-white hover:text-primary transition-colors uppercase">
-              CRM
             </Link>
             
             <div className="h-4 w-px bg-white/20 mx-2" />

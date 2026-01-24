@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, DivIcon, LatLngBoundsExpression } from 'leaflet';
+import { DivIcon, LatLngBoundsExpression } from 'leaflet';
 import { useProperties } from '../hooks/useProperties';
 import { Link } from 'react-router-dom';
 import { MapPin, ArrowRight, Building2, Star } from 'lucide-react';

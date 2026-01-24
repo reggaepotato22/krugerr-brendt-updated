@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { getLeads, updateLeadStatus, deleteLead, Lead } from '../services/crm';
-import { Trash2, CheckCircle, Mail, Phone, Calendar, Search } from 'lucide-react';
+import { Trash2, Mail, Phone, Calendar, Search } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [leads, setLeads] = useState<Lead[]>([]);

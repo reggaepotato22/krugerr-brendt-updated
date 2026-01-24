@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { MessageSquare, X, Send, User, Bot, Phone } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../lib/api';
 

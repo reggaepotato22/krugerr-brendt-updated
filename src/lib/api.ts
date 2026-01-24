@@ -1,7 +1,6 @@
 // API Base URL - Change this to your actual domain in production
 // For local dev without a PHP server, this will likely fail unless you mock it or run a PHP server on port 8000
 import { getLeads, saveLead, updateLeadStatus } from '../services/crm';
-import { Property } from '../data/properties';
 
 const API_BASE = '/api'; 
 
@@ -119,6 +118,13 @@ export const api = {
         propertyId: inquiryData.property_id,
         propertyTitle: inquiryData.subject // Using subject as title proxy for now
       });
+      
+      // Simulate WhatsApp Notification for Demo
+      console.log(`[DEMO MODE] WhatsApp Notification Sent to +254 733 323 273:`, {
+        to: "254733323273",
+        message: `New Lead: ${inquiryData.customer_name} - ${inquiryData.message.substring(0, 50)}...`
+      });
+
       return { message: "Inquiry saved locally (Demo Mode)" };
     }
   },

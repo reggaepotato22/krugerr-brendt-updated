@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../lib/api';
-import { Plus, Trash2, Edit, MapPin } from 'lucide-react';
+import { Plus, Trash2, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AdminProperties = () => {

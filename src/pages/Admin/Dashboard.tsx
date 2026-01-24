@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../lib/supabase';
-import { Building2, MessageSquare, DollarSign, TrendingUp } from 'lucide-react';
+import { api } from '../../lib/api';
+import { Building2, MessageSquare, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
@@ -18,31 +18,21 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      // Fetch Properties Stats
-      const { count: totalProps } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true });
+      // Fetch Properties
+      const properties = await api.getProperties();
+      const totalProps = properties.length;
+      const activeProps = properties.filter((p: any) => p.status === 'available').length;
 
-      const { count: activeProps } = await supabase
-        .from('properties')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'available');
-
-      // Fetch Inquiries Stats
-      const { count: totalInqs } = await supabase
-        .from('inquiries')
-        .select('*', { count: 'exact', head: true });
-
-      const { count: newInqs } = await supabase
-        .from('inquiries')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'new');
+      // Fetch Inquiries (Leads)
+      const inquiries = await api.getInquiries();
+      const totalInqs = inquiries.length;
+      const newInqs = inquiries.filter((i: any) => i.status === 'new').length;
 
       setStats({
-        totalProperties: totalProps || 0,
-        activeListings: activeProps || 0,
-        totalInquiries: totalInqs || 0,
-        newInquiries: newInqs || 0,
+        totalProperties: totalProps,
+        activeListings: activeProps,
+        totalInquiries: totalInqs,
+        newInquiries: newInqs,
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -94,14 +84,14 @@ const AdminDashboard = () => {
           value={stats.totalInquiries} 
           icon={MessageSquare} 
           color="bg-purple-500"
-          link="/admin/inquiries"
+          link="/admin/leads"
         />
         <StatCard 
           title="New Inquiries" 
           value={stats.newInquiries} 
           icon={MessageSquare} 
-          color="bg-primary"
-          link="/admin/inquiries"
+          color="bg-red-500"
+          link="/admin/leads"
         />
       </div>
 
