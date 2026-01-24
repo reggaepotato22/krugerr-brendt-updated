@@ -8,7 +8,7 @@ import { Trash2, Mail, Phone, Calendar, Search } from 'lucide-react';
 const AdminDashboard = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [filter, setFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'All' | 'New' | 'Contacted' | 'Closed'>('All');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'new' | 'contacted' | 'closed'>('all');
 
   useEffect(() => {
     // Load leads
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     const matchesSearch = lead.name.toLowerCase().includes(filter.toLowerCase()) || 
                           lead.email.toLowerCase().includes(filter.toLowerCase()) ||
                           lead.propertyTitle?.toLowerCase().includes(filter.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || lead.status === statusFilter;
+    const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
           </div>
           
           <div className="flex gap-2">
-            {(['All', 'New', 'Contacted', 'Closed'] as const).map((s) => (
+            {(['all', 'new', 'contacted', 'closed'] as const).map((s) => (
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
@@ -132,14 +132,14 @@ const AdminDashboard = () => {
                           value={lead.status}
                           onChange={(e) => handleStatusChange(lead.id, e.target.value as any)}
                           className={`text-xs font-bold uppercase tracking-wide px-2 py-1 rounded-sm border-none focus:ring-0 cursor-pointer ${
-                            lead.status === 'New' ? 'bg-blue-100 text-blue-700' :
-                            lead.status === 'Contacted' ? 'bg-yellow-100 text-yellow-700' :
+                            lead.status === 'new' ? 'bg-blue-100 text-blue-700' :
+                            lead.status === 'contacted' ? 'bg-yellow-100 text-yellow-700' :
                             'bg-green-100 text-green-700'
                           }`}
                         >
-                          <option value="New">New</option>
-                          <option value="Contacted">Contacted</option>
-                          <option value="Closed">Closed</option>
+                          <option value="new">New</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="closed">Closed</option>
                         </select>
                       </td>
                       <td className="p-4 text-right">
