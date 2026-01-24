@@ -97,12 +97,54 @@ if ($method === 'POST') {
             error_log("SMTP Error: " . $sent);
         }
 
-        // TODO: Integrate actual SMS Gateway here for +254 733 323 273
+        // 3. Send WhatsApp Notification (via UltraMsg or similar gateway)
+        // To use this: Sign up at ultramsg.com (or any WhatsApp Gateway) to get an Instance ID and Token.
+        $wa_instance_id = 'YOUR_INSTANCE_ID'; // e.g., instance12345
+        $wa_token       = 'YOUR_TOKEN';       // e.g., abc123xyz
         
+        if ($wa_instance_id !== 'YOUR_INSTANCE_ID') {
+            $admin_phone = "254733323273"; // The admin's WhatsApp number
+            $wa_message = "🔔 *New Lead Received*\n\n" . 
+                          "👤 *Name:* " . $data['customer_name'] . "\n" .
+                          "📧 *Email:* " . $data['email'] . "\n" .
+                          "💬 *Msg:* " . substr($data['message'], 0, 100) . "...";
+            
+            $curl = curl_init();
+            $params = [
+                'token' => $wa_token,
+                'to' => $admin_phone,
+                'body' => $wa_message
+            ];
+            
+            // Example using UltraMsg API structure
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => "https://api.ultramsg.com/$wa_instance_id/messages/chat",
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "",
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 30,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => http_build_query($params),
+              CURLOPT_HTTPHEADER => array(
+                "content-type: application/x-www-form-urlencoded"
+              ),
+            ));
+            
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+            
+            if ($err) {
+                error_log("WhatsApp Error: " . $err);
+            }
+        }
+
     } catch (Exception $e) {
-        error_log("Mail Exception: " . $e->getMessage());
+        error_log("Mail/SMS Exception: " . $e->getMessage());
     }
 
+    // Final Response
     if ($db_saved || $email_sent) {
         echo json_encode([
             "message" => "Inquiry processed", 
@@ -111,7 +153,7 @@ if ($method === 'POST') {
         ]);
     } else {
         http_response_code(500);
-        echo json_encode(["error" => "Failed to process inquiry"]);
+        echo json_encode(["error" => "Failed to save or send inquiry"]);
     }
 }
 ?>

@@ -23,8 +23,10 @@ export const api = {
       return await res.json();
     } catch (error) {
       console.warn("API Error (Using local data):", error);
-      // Fallback to empty or local json if we had one
-      return [];
+      // Fallback to local storage properties combined with defaults
+      const localProps = JSON.parse(localStorage.getItem('kb_properties') || '[]');
+      // You might want to merge with default hardcoded properties if you have them
+      return localProps;
     }
   },
 
@@ -41,8 +43,17 @@ export const api = {
         }
         return await res.json();
     } catch (e) {
-        console.error("Add Property Failed:", e);
-        throw e;
+        console.warn("Add Property Failed (switching to Demo Mode):", e);
+        // DEMO MODE: Save to Local Storage
+        const localProps = JSON.parse(localStorage.getItem('kb_properties') || '[]');
+        const newProp = {
+            ...propertyData,
+            id: Date.now(), // Fake ID
+            created_at: new Date().toISOString()
+        };
+        localProps.unshift(newProp);
+        localStorage.setItem('kb_properties', JSON.stringify(localProps));
+        return { message: "Property created (Demo Mode)", id: newProp.id };
     }
   },
 
@@ -98,20 +109,17 @@ export const api = {
       if (!res.ok || !isJson(res)) throw new Error("API unavailable");
       return await res.json();
     } catch (e) {
-        console.warn("Using Local Storage for Saving Inquiry");
-        // Extract phone from message if possible, or just save
-        const phoneMatch = inquiryData.message.match(/Phone: (.*)/);
-        const phone = phoneMatch ? phoneMatch[1] : '';
-        
-        saveLead({
-            name: inquiryData.customer_name,
-            email: inquiryData.email,
-            phone: phone,
-            message: inquiryData.message,
-            propertyId: inquiryData.property_id,
-            propertyTitle: inquiryData.subject // Using subject as proxy for title if not passed explicitly, usually formatted
-        });
-        return { message: "Saved locally" };
+      console.warn("API Error (Using Local Storage for Demo):", e);
+      // Fallback: Save to Local Storage
+      saveLead({
+        name: inquiryData.customer_name,
+        email: inquiryData.email,
+        phone: inquiryData.phone || '', // Ensure phone is passed if available
+        message: inquiryData.message,
+        propertyId: inquiryData.property_id,
+        propertyTitle: inquiryData.subject // Using subject as title proxy for now
+      });
+      return { message: "Inquiry saved locally (Demo Mode)" };
     }
   },
 
