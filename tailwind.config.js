@@ -4,23 +4,29 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#C5A059', // Gold
-          dark: '#B08D45',
-          light: '#D4B87E',
+          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-bg) / <alpha-value>)',
         },
         secondary: {
-          DEFAULT: '#0A0A0A', // Deep Black
-          light: '#1A1A1A',
+          DEFAULT: 'rgb(var(--color-secondary) / <alpha-value>)',
+          foreground: 'rgb(var(--color-text) / <alpha-value>)',
         },
-        accent: '#004225', // British Racing Green (Optional deep accent)
+        background: 'rgb(var(--color-bg) / <alpha-value>)',
+        foreground: 'rgb(var(--color-text) / <alpha-value>)',
+        muted: 'rgb(var(--color-text-muted) / <alpha-value>)',
+        border: 'rgb(var(--color-border) / <alpha-value>)',
+        card: 'rgb(var(--color-card) / <alpha-value>)',
+        input: 'rgb(var(--color-input) / <alpha-value>)',
+        accent: '#004225', // Keeping the static accent for now, or could map it too
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'serif'],
-        sans: ['Montserrat', 'sans-serif'],
+        sans: ['"Manrope"', 'sans-serif'],
       },
       letterSpacing: {
         widest: '.25em',

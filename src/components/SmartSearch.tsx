@@ -91,7 +91,7 @@ const SmartSearch = () => {
 
         <button 
           onClick={handleSearch}
-          className="w-full bg-primary hover:bg-primary-light text-secondary font-bold py-3 px-6 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wide text-sm"
+          className="w-full bg-primary hover:bg-primary-light text-secondary font-bold py-3 px-6 transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wide text-sm btn-shine"
         >
           <Search className="w-4 h-4" />
           Search

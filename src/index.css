@@ -3,11 +3,97 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Estate Light (Default) */
+    --color-bg: 255 255 255; /* #ffffff */
+    --color-text: 26 26 26; /* #1a1a1a */
+    --color-text-muted: 75 85 99; /* gray-600 */
+    --color-primary: 197 160 89; /* #C5A059 (Gold) */
+    --color-secondary: 243 244 246; /* #F3F4F6 (Light Gray) */
+    --color-border: 229 231 235; /* gray-200 */
+    --color-card: 255 255 255;
+    --color-input: 249 250 251;
+  }
+
+  [data-theme='dark'] {
+    /* Midnight Executive */
+    --color-bg: 18 18 18; /* #121212 */
+    --color-text: 243 244 246; /* #f3f4f6 */
+    --color-text-muted: 156 163 175; /* gray-400 */
+    --color-primary: 212 184 126; /* #D4B87E (Muted Bronze/Gold) */
+    --color-secondary: 30 30 30; /* #1E1E1E */
+    --color-border: 45 45 45;
+    --color-card: 24 24 24;
+    --color-input: 30 30 30;
+  }
+
+  [data-theme='coastal'] {
+    /* Coastal Platinum */
+    --color-bg: 15 23 42; /* #0f172a (Slate 900) */
+    --color-text: 241 245 249; /* #f1f5f9 */
+    --color-text-muted: 148 163 184; /* slate-400 */
+    --color-primary: 203 213 225; /* #cbd5e1 (Silver/Platinum) */
+    --color-secondary: 30 41 59; /* #1e293b (Slate 800) */
+    --color-border: 51 65 85; /* slate-700 */
+    --color-card: 30 41 59;
+    --color-input: 51 65 85;
+  }
+
   body {
-    @apply antialiased text-white bg-secondary font-sans;
+    @apply antialiased font-sans transition-colors duration-300;
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-text));
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
   }
+}
+
+/* Custom Utilities */
+.glass-panel {
+  @apply backdrop-blur-md bg-white/10 border border-white/10 shadow-lg;
+}
+
+[data-theme='light'] .glass-panel {
+  @apply bg-white/80 border-gray-200/50 shadow-sm;
+}
+
+/* Button Shine Effect */
+@keyframes shine {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  50% { transform: translateX(150%) skewX(-15deg); }
+  100% { transform: translateX(150%) skewX(-15deg); }
+}
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: translateX(-150%) skewX(-15deg);
+  animation: shine 4s infinite ease-in-out;
+}
+
+/* Hide scrollbar for smooth horizontal scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

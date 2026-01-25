@@ -1,6 +1,7 @@
 import PropertyCard from './PropertyCard';
 import { Link } from 'react-router-dom';
 import { properties } from '../data/properties';
+import { motion } from 'framer-motion';
 
 const FeaturedProperties = () => {
   // Select specific properties to feature (mix of Sale and Rent)
@@ -20,29 +21,65 @@ const FeaturedProperties = () => {
     .map(id => featuredProperties.find(p => p.id === id))
     .filter((p): p is typeof properties[0] => p !== undefined);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="py-24 bg-background transition-colors duration-300">
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-end mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-between items-end mb-12"
+        >
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">Featured Properties</h2>
-            <p className="text-gray-500 max-w-xl">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">Featured Properties</h2>
+            <p className="text-muted-foreground max-w-xl">
               Explore our hand-picked selection of the most exclusive properties in Kenya and premier international locations.
             </p>
           </div>
-          <Link to="/buy" className="hidden md:block text-primary font-medium border-b-2 border-primary pb-1 hover:text-secondary hover:border-secondary transition-colors uppercase text-sm tracking-wide">
+          <Link to="/buy" className="hidden md:block text-primary font-medium border-b-2 border-primary pb-1 hover:text-foreground hover:border-foreground transition-colors uppercase text-sm tracking-wide">
             View All Properties
           </Link>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {sortedProperties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
+            <motion.div key={property.id} variants={itemVariants}>
+              <PropertyCard property={property} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         
         <div className="mt-12 text-center md:hidden">
-          <Link to="/buy" className="text-primary font-medium border-b-2 border-primary pb-1 hover:text-secondary hover:border-secondary transition-colors uppercase text-sm tracking-wide">
+          <Link to="/buy" className="text-primary font-medium border-b-2 border-primary pb-1 hover:text-foreground hover:border-foreground transition-colors uppercase text-sm tracking-wide">
             View All Properties
           </Link>
         </div>
@@ -50,5 +87,6 @@ const FeaturedProperties = () => {
     </section>
   );
 };
+
 
 export default FeaturedProperties;

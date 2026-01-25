@@ -102,34 +102,34 @@ const AddProperty = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-serif font-bold text-secondary mb-8">Add New Property</h1>
+      <h1 className="text-2xl font-serif font-bold text-foreground mb-8">Add New Property</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-sm shadow-sm border border-gray-100 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-card p-8 rounded-sm shadow-sm border border-border space-y-6">
         {/* Basic Info */}
         <div className="space-y-4">
-          <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2 border-b pb-2">
+          <h3 className="text-lg font-bold text-foreground flex items-center gap-2 border-b border-border pb-2">
             Basic Information
           </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Title</label>
+            <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Title</label>
             <input
               type="text"
               required
               value={formData.title}
               onChange={e => setFormData({...formData, title: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
               placeholder="e.g. Luxury Villa in Kilifi"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Price</label>
+            <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Price</label>
             <div className="flex">
               <select
                 value={formData.currency}
                 onChange={e => setFormData({...formData, currency: e.target.value})}
-                className="bg-primary/20 border border-primary/20 border-r-0 p-3 rounded-l-sm focus:outline-none text-gray-900"
+                className="bg-primary/20 border border-primary/20 border-r-0 p-3 rounded-l-sm focus:outline-none text-foreground"
               >
                 <option value="KES">KES</option>
                 <option value="USD">USD</option>
@@ -141,18 +141,18 @@ const AddProperty = () => {
                 required
                 value={formData.price}
                 onChange={e => setFormData({...formData, price: e.target.value})}
-                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-r-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-r-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
                 placeholder="0.00"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Type</label>
+            <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Type</label>
             <select
               value={formData.type}
               onChange={e => setFormData({...formData, type: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             >
               <option value="Sale">For Sale</option>
               <option value="Rent">For Rent</option>
@@ -160,35 +160,35 @@ const AddProperty = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Location</label>
+            <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Location</label>
             <input
               type="text"
               required
               value={formData.location}
               onChange={e => setFormData({...formData, location: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
               placeholder="City, Area"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Latitude</label>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Latitude</label>
               <input
                 type="text"
                 value={formData.lat}
                 onChange={e => setFormData({...formData, lat: e.target.value})}
-                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
                 placeholder="-1.2921"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Longitude</label>
+              <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Longitude</label>
               <input
                 type="text"
                 value={formData.lng}
                 onChange={e => setFormData({...formData, lng: e.target.value})}
-                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
                 placeholder="36.8219"
               />
             </div>
@@ -199,59 +199,59 @@ const AddProperty = () => {
         {/* Details */}
         <div className="grid grid-cols-3 gap-6">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Beds</label>
+            <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Beds</label>
             <input
               type="number"
               value={formData.beds}
               onChange={e => setFormData({...formData, beds: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Baths</label>
+            <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Baths</label>
             <input
               type="number"
               value={formData.baths}
               onChange={e => setFormData({...formData, baths: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Sq Ft</label>
+            <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Sq Ft</label>
             <input
               type="number"
               value={formData.sqft}
               onChange={e => setFormData({...formData, sqft: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Amenities</label>
+          <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Amenities</label>
           <input
             type="text"
             value={formData.amenities}
             onChange={e => setFormData({...formData, amenities: e.target.value})}
-            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             placeholder="Pool, Gym, Security (comma separated)"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Description</label>
+          <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Description</label>
           <textarea
             rows={4}
             value={formData.description}
             onChange={e => setFormData({...formData, description: e.target.value})}
-            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-white transition-colors text-gray-900 placeholder-gray-500"
+            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
           ></textarea>
         </div>
 
         {/* Image Upload */}
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Images</label>
-          <div className="border-2 border-dashed border-gray-200 rounded-sm p-8 text-center hover:bg-gray-50 transition-colors relative">
+          <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Images</label>
+          <div className="border-2 border-dashed border-border rounded-sm p-8 text-center hover:bg-muted transition-colors relative">
             <input
               type="file"
               multiple
@@ -259,15 +259,15 @@ const AddProperty = () => {
               onChange={handleImageChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-sm text-gray-500 font-medium">Click or drag images here to upload</p>
+            <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground font-medium">Click or drag images here to upload</p>
           </div>
           
           {/* Previews */}
           {previews.length > 0 && (
             <div className="grid grid-cols-4 gap-4 mt-4">
               {previews.map((url, idx) => (
-                <div key={idx} className="relative aspect-video bg-gray-100 rounded-sm overflow-hidden group">
+                <div key={idx} className="relative aspect-video bg-muted rounded-sm overflow-hidden group">
                   <img src={url} alt="" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -282,11 +282,11 @@ const AddProperty = () => {
           )}
         </div>
 
-        <div className="pt-6 border-t border-gray-100">
+        <div className="pt-6 border-t border-border">
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-secondary font-bold py-4 uppercase tracking-wide hover:bg-secondary hover:text-white transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full bg-primary text-primary-foreground font-bold py-4 uppercase tracking-wide hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 btn-shine"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {loading ? 'Adding Property...' : 'Add Property'}

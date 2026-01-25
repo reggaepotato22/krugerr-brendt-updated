@@ -15,6 +15,7 @@ const AdminDashboard = () => {
     setLeads(getLeads());
   }, []);
 
+  // Handle status updates with strict typing
   const handleStatusChange = (id: string, newStatus: Lead['status']) => {
     updateLeadStatus(id, newStatus);
     setLeads(getLeads()); // Refresh
@@ -36,24 +37,24 @@ const AdminDashboard = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <div className="pt-32 pb-12 bg-secondary text-white">
+      <div className="pt-32 pb-12 bg-card border-b border-border">
         <div className="container mx-auto px-6">
-          <h1 className="text-3xl font-serif mb-2">CRM Dashboard</h1>
-          <p className="text-gray-400">Manage your leads and inquiries.</p>
+          <h1 className="text-3xl font-serif mb-2 text-foreground">CRM Dashboard</h1>
+          <p className="text-muted-foreground">Manage your leads and inquiries.</p>
         </div>
       </div>
 
       <main className="flex-grow container mx-auto px-6 py-12">
         {/* Controls */}
-        <div className="bg-white p-4 rounded-sm shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div className="bg-card p-4 rounded-sm shadow-sm border border-border mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input 
               type="text" 
               placeholder="Search leads..." 
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-sm focus:border-primary focus:outline-none"
+              className="w-full pl-10 pr-4 py-2 bg-background border border-input rounded-sm focus:border-primary focus:outline-none text-foreground placeholder:text-muted-foreground"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             />
@@ -66,8 +67,8 @@ const AdminDashboard = () => {
                 onClick={() => setStatusFilter(s)}
                 className={`px-4 py-2 text-xs font-bold uppercase tracking-wide rounded-sm transition-colors ${
                   statusFilter === s 
-                    ? 'bg-primary text-secondary' 
-                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
               >
                 {s}
@@ -77,23 +78,23 @@ const AdminDashboard = () => {
         </div>
 
         {/* Leads List */}
-        <div className="bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-card rounded-sm shadow-sm border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Contact</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Property</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Message</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                <tr className="bg-muted/50 border-b border-border">
+                  <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Date</th>
+                  <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Contact</th>
+                  <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Property</th>
+                  <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Message</th>
+                  <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Status</th>
+                  <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-border">
                 {filteredLeads.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-gray-400">
+                    <td colSpan={6} className="p-8 text-center text-muted-foreground">
                       No leads found.
                     </td>
                   </tr>
