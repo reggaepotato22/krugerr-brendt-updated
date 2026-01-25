@@ -32,9 +32,10 @@ const Navbar = () => {
     { name: 'Contact', href: '/contact' },
   ];
 
-  // Text color logic: White on transparent home hero, Theme text otherwise
+  // Text color logic: White on transparent home hero, Gold (Primary) or Black otherwise
   const textColorClass = !scrolled && isHome ? 'text-white' : 'text-foreground';
-  const logoTextClass = !scrolled && isHome ? 'text-white' : 'text-foreground';
+  // Logo text: White on transparent home hero, Gold otherwise (to ensure "Gold or Black" requirement)
+  const logoTextClass = !scrolled && isHome ? 'text-white' : 'text-primary';
   
   const ThemeIcon = () => {
     if (theme === 'light') return <Sun size={20} />;

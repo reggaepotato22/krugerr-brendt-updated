@@ -111,21 +111,21 @@ const AdminDashboard = () => {
                         </div>
                       </td>
                       <td className="p-4">
-                        <div className="font-medium text-secondary">{lead.name}</div>
-                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                        <div className="font-medium text-foreground">{lead.name}</div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                           <Mail className="w-3 h-3" /> {lead.email}
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                           <Phone className="w-3 h-3" /> {lead.phone}
                         </div>
                       </td>
-                      <td className="p-4 text-sm text-secondary font-medium">
+                      <td className="p-4 text-sm text-foreground font-medium">
                         {lead.propertyTitle || 'General Inquiry'}
                         {lead.propertyId && (
-                          <span className="block text-xs text-gray-400 font-normal">ID: {lead.propertyId}</span>
+                          <span className="block text-xs text-muted-foreground font-normal">ID: {lead.propertyId}</span>
                         )}
                       </td>
-                      <td className="p-4 text-sm text-gray-600 max-w-xs truncate">
+                      <td className="p-4 text-sm text-muted-foreground max-w-xs truncate">
                         {lead.message}
                       </td>
                       <td className="p-4">
@@ -146,7 +146,7 @@ const AdminDashboard = () => {
                       <td className="p-4 text-right">
                         <button 
                           onClick={() => handleDelete(lead.id)}
-                          className="text-gray-400 hover:text-red-500 transition-colors"
+                          className="text-muted-foreground hover:text-red-600 transition-colors p-2 hover:bg-red-50 rounded-full"
                           title="Delete Lead"
                         >
                           <Trash2 className="w-4 h-4" />
