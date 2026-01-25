@@ -77,10 +77,10 @@ const Hero = () => {
           transition={{ delay: 0.5, duration: 1 }}
           className="text-center mb-12 max-w-5xl"
         >
-          <h1 className="text-4xl md:text-7xl font-serif text-white mb-6 leading-tight tracking-wide drop-shadow-lg">
+          <h1 className="text-3xl sm:text-4xl md:text-7xl font-serif text-white mb-6 leading-tight tracking-wide drop-shadow-lg">
             UNPARALLELED <span className="text-primary italic">LUXURY</span>
           </h1>
-          <p className="text-white/90 text-lg md:text-xl font-light tracking-widest uppercase drop-shadow-md">
+          <p className="text-white/90 text-sm sm:text-lg md:text-xl font-light tracking-widest uppercase drop-shadow-md">
             Curating the World's Finest Properties
           </p>
         </motion.div>
@@ -95,7 +95,7 @@ const Hero = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer"
+        className="hidden md:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-2 cursor-pointer"
         onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
       >
         <span className="text-xs text-white/70 tracking-widest uppercase">Scroll</span>

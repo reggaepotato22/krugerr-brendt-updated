@@ -51,11 +51,11 @@ const FeaturedProperties = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="flex justify-between items-end mb-12"
+          className="flex justify-between items-end mb-8 md:mb-12"
         >
           <div>
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground mb-4">Featured Properties</h2>
-            <p className="text-muted-foreground max-w-xl">
+            <p className="text-muted-foreground max-w-xl text-sm md:text-base">
               Explore our hand-picked selection of the most exclusive properties in Kenya and premier international locations.
             </p>
           </div>

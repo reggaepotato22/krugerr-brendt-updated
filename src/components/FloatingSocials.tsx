@@ -24,7 +24,7 @@ const FloatingSocials = () => {
   ];
 
   return (
-    <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2">
+    <div className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 flex-col gap-2 p-2">
       {socials.map((social, idx) => (
         <motion.a
           key={idx}

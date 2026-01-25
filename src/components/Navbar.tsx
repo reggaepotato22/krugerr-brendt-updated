@@ -47,7 +47,7 @@ const Navbar = () => {
     <>
       <nav
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out',
+          'fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out pt-safe',
           scrolled || !isHome 
             ? 'bg-background/80 backdrop-blur-md py-4 shadow-sm border-b border-border' 
             : 'bg-transparent py-8'
@@ -141,7 +141,7 @@ const Navbar = () => {
           >
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute top-6 right-6 p-2 text-foreground hover:text-primary"
+              className="absolute top-6 right-6 p-4 text-foreground hover:text-primary min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
               <X size={32} />
             </button>
@@ -152,7 +152,7 @@ const Navbar = () => {
                   key={link.name}
                   to={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-3xl font-serif text-foreground hover:text-primary transition-colors"
+                  className="text-3xl font-serif text-foreground hover:text-primary transition-colors py-2"
                 >
                   {link.name}
                 </Link>
@@ -162,13 +162,13 @@ const Navbar = () => {
 
               {/* Mobile Theme Toggle */}
               <div className="flex gap-4 justify-center">
-                <button onClick={() => setTheme('light')} className={cn("p-3 rounded-full border", theme === 'light' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
+                <button onClick={() => setTheme('light')} className={cn("p-4 rounded-full border min-h-[44px] min-w-[44px] flex items-center justify-center", theme === 'light' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
                   <Sun size={24} />
                 </button>
-                <button onClick={() => setTheme('dark')} className={cn("p-3 rounded-full border", theme === 'dark' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
+                <button onClick={() => setTheme('dark')} className={cn("p-4 rounded-full border min-h-[44px] min-w-[44px] flex items-center justify-center", theme === 'dark' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
                   <Moon size={24} />
                 </button>
-                <button onClick={() => setTheme('coastal')} className={cn("p-3 rounded-full border", theme === 'coastal' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
+                <button onClick={() => setTheme('coastal')} className={cn("p-4 rounded-full border min-h-[44px] min-w-[44px] flex items-center justify-center", theme === 'coastal' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
                   <Cloud size={24} />
                 </button>
               </div>
