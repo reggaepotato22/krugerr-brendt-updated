@@ -38,7 +38,7 @@ const projects = [
 
 const NewProjectsPage = () => {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
       
       {/* Hero Section */}
@@ -54,7 +54,7 @@ const NewProjectsPage = () => {
           <motion.h1 
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-4xl md:text-6xl font-serif text-white mb-4"
+            className="text-4xl md:text-6xl font-serif text-secondary-foreground mb-4"
           >
             New Developments
           </motion.h1>
@@ -62,7 +62,7 @@ const NewProjectsPage = () => {
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-gray-300 max-w-2xl mx-auto text-lg"
+            className="text-secondary-foreground/80 max-w-2xl mx-auto text-lg"
           >
             Pioneering the future of luxury living with our upcoming architectural masterpieces.
           </motion.p>

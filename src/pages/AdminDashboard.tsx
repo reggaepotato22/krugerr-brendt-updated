@@ -100,13 +100,13 @@ const AdminDashboard = () => {
                   </tr>
                 ) : (
                   filteredLeads.map((lead) => (
-                    <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="p-4 text-sm text-gray-500 whitespace-nowrap">
+                    <tr key={lead.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="p-4 text-sm text-muted-foreground whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-3 h-3" />
                           {new Date(lead.date).toLocaleDateString()}
                         </div>
-                        <div className="text-xs text-gray-400 mt-1">
+                        <div className="text-xs text-muted-foreground mt-1">
                           {new Date(lead.date).toLocaleTimeString()}
                         </div>
                       </td>

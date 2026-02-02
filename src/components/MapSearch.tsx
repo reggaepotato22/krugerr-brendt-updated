@@ -130,20 +130,20 @@ const MapSearch = () => {
       </MapContainer>
       
       {/* Legend / Overlay */}
-      <div className="absolute bottom-4 right-4 z-[400] bg-white/90 backdrop-blur-sm p-4 rounded-sm shadow-lg border border-gray-100 max-w-xs">
-        <h4 className="font-serif font-bold text-secondary mb-3 text-sm border-b border-gray-200 pb-2">Map Legend</h4>
+      <div className="absolute bottom-4 right-4 z-[400] bg-card/90 backdrop-blur-sm p-4 rounded-sm shadow-lg border border-border max-w-xs">
+        <h4 className="font-serif font-bold text-foreground mb-3 text-sm border-b border-border pb-2">Map Legend</h4>
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shadow-sm">
                <Star size={14} fill="currentColor" />
             </div>
-            <span className="text-xs font-medium text-gray-700">Head Office (Kilifi)</span>
+            <span className="text-xs font-medium text-muted-foreground">Head Office (Kilifi)</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-sm">
                <Building2 size={14} />
             </div>
-            <span className="text-xs font-medium text-gray-700">Available Properties</span>
+            <span className="text-xs font-medium text-muted-foreground">Available Properties</span>
           </div>
         </div>
       </div>

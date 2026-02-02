@@ -9,12 +9,12 @@ const RentPage = () => {
   const rentProperties = properties.filter(p => p.type === 'Rent');
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      <div className="pt-32 pb-12 bg-secondary text-white">
+      <div className="pt-32 pb-12 bg-secondary text-secondary-foreground">
         <div className="container mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-serif mb-4">Luxury Rentals</h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto font-light tracking-wide">
+          <h1 className="text-4xl md:text-5xl font-serif mb-4 text-foreground">Luxury Rentals</h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-light tracking-wide">
             Discover our exclusive collection of premium rental properties in Kenya's most sought-after locations.
           </p>
         </div>

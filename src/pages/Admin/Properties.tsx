@@ -34,43 +34,43 @@ const AdminProperties = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-serif font-bold text-secondary">All Properties</h1>
+        <h1 className="text-2xl font-serif font-bold text-foreground">All Properties</h1>
         <Link 
           to="/admin/properties/add" 
-          className="bg-primary text-secondary px-4 py-2 rounded-sm font-bold uppercase text-xs tracking-wide flex items-center gap-2 hover:bg-white transition-colors"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-sm font-bold uppercase text-xs tracking-wide flex items-center gap-2 hover:bg-primary/90 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Add New
         </Link>
       </div>
 
-      <div className="bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-card rounded-sm shadow-sm border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-gray-100">
+            <thead className="bg-muted/50 border-b border-border">
               <tr>
-                <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Property</th>
-                <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Type</th>
-                <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Price</th>
-                <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Property</th>
+                <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Type</th>
+                <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Price</th>
+                <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Status</th>
+                <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-border">
               {properties.map((property) => (
-                <tr key={property.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={property.id} className="hover:bg-muted/50 transition-colors">
                   <td className="p-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 bg-gray-200 rounded-sm overflow-hidden flex-shrink-0">
+                      <div className="w-16 h-16 bg-muted rounded-sm overflow-hidden flex-shrink-0">
                         {property.image_urls?.[0] ? (
                           <img src={property.image_urls[0]} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Img</div>
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No Img</div>
                         )}
                       </div>
                       <div>
-                        <h3 className="font-bold text-secondary text-sm line-clamp-1">{property.title}</h3>
-                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                        <h3 className="font-bold text-foreground text-sm line-clamp-1">{property.title}</h3>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
                           <MapPin className="w-3 h-3" />
                           {property.location}
                         </div>
@@ -78,7 +78,7 @@ const AdminProperties = () => {
                     </div>
                   </td>
                   <td className="p-4">
-                    <span className="text-sm font-medium text-gray-600">{property.type}</span>
+                    <span className="text-sm font-medium text-foreground">{property.type}</span>
                   </td>
                   <td className="p-4">
                     <span className="text-sm font-medium text-primary font-serif">
@@ -87,7 +87,7 @@ const AdminProperties = () => {
                   </td>
                   <td className="p-4">
                     <span className={`text-xs font-bold uppercase px-2 py-1 rounded-sm ${
-                      property.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                      property.status === 'available' ? 'bg-green-500/10 text-green-500' : 'bg-destructive/10 text-destructive'
                     }`}>
                       {property.status}
                     </span>
@@ -96,7 +96,7 @@ const AdminProperties = () => {
                     <div className="flex items-center justify-end gap-2">
                       <button 
                         onClick={() => deleteProperty(property.id)}
-                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-sm transition-colors"
+                        className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-sm transition-colors"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -107,7 +107,7 @@ const AdminProperties = () => {
               ))}
               {properties.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-gray-500">
+                  <td colSpan={5} className="p-8 text-center text-muted-foreground">
                     No properties found.
                   </td>
                 </tr>
