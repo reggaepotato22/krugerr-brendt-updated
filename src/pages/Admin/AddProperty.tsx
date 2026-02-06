@@ -39,10 +39,10 @@ const AddProperty = () => {
         setFormData({
           title: property.title || '',
           description: property.description || '',
-          price: property.price.toString(),
+          price: property.price ? property.price.toString() : '',
           currency: 'KES',
-          location: property.location,
-          type: property.type,
+          location: property.location || '',
+          type: property.type || 'Sale',
           status: property.status || 'available',
           beds: property.beds.toString(),
           baths: property.baths.toString(),
