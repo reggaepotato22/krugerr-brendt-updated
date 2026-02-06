@@ -89,7 +89,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     const sourceRate = currentRates[sourceCurrency];
     const targetRate = currentRates[currency];
 
-    if (!sourceRate || !targetRate) return priceString;
+    if (!sourceRate || !targetRate) return priceString.toString();
 
     const valueInUSD = value / sourceRate;
     const targetValue = valueInUSD * targetRate;

@@ -114,7 +114,10 @@ const AddProject = () => {
 
     try {
       // Simulate Brochure Upload (convert to Base64 if small, else just use name)
-      let brochureUrl = isEditMode && getProjectById(id!)?.brochureUrl;
+      let brochureUrl: string | undefined = undefined;
+      if (isEditMode) {
+        brochureUrl = getProjectById(id!)?.brochureUrl;
+      }
       
       if (brochure) {
           // Simple fake URL or Base64 if needed. For now, we'll use a fake path since we can't upload.

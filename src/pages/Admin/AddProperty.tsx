@@ -37,7 +37,7 @@ const AddProperty = () => {
       const property = getPropertyById(id);
       if (property) {
         setFormData({
-          title: property.title,
+          title: property.title || '',
           description: property.description,
           price: property.price.toString(),
           currency: 'KES',
@@ -47,9 +47,9 @@ const AddProperty = () => {
           beds: property.beds.toString(),
           baths: property.baths.toString(),
           sqft: property.sqft.toString(),
-          lat: property.coords[0].toString(),
-          lng: property.coords[1].toString(),
-          amenities: property.amenities.join(', ')
+          lat: property.coords ? property.coords[0].toString() : '',
+          lng: property.coords ? property.coords[1].toString() : '',
+          amenities: property.amenities ? property.amenities.join(', ') : ''
         });
         setPreviews(property.images);
       }

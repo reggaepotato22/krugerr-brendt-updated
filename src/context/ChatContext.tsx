@@ -9,7 +9,7 @@ export interface ChatMessage {
   propertyId?: string | number;
 }
 
-interface ChatSession {
+export interface ChatSession {
   id: string;
   startTime: string;
   lastMessageTime: string;
