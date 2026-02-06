@@ -70,17 +70,17 @@ const Hero = () => {
       </div>
 
       {/* Content Overlay */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-6">
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 md:px-6">
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
-          className="text-center mb-12 max-w-5xl"
+          className="text-center mb-8 md:mb-12 max-w-5xl"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-7xl font-serif text-white mb-6 leading-tight tracking-wide drop-shadow-lg">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif text-white mb-4 md:mb-6 leading-tight tracking-wide drop-shadow-lg">
             UNPARALLELED <span className="text-primary italic">LUXURY</span>
           </h1>
-          <p className="text-white/90 text-sm sm:text-lg md:text-xl font-light tracking-widest uppercase drop-shadow-md">
+          <p className="text-white/90 text-xs sm:text-base md:text-xl font-light tracking-widest uppercase drop-shadow-md">
             Curating the World's Finest Properties
           </p>
         </motion.div>

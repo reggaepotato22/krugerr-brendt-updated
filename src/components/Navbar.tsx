@@ -129,10 +129,14 @@ const Navbar = () => {
               The top navbar on mobile usually just has Logo and maybe User/Profile.
               Let's hide the hamburger in the top navbar for mobile, since it's in the bottom bar.
           */}
-           <div className="md:hidden">
-             {/* Logo is already there. Maybe Currency Selector? */}
-             <CurrencySelector />
-           </div>
+          {/* Mobile Menu Toggle */}
+          <button 
+            className={cn("md:hidden p-2 text-foreground hover:text-primary transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center", textColorClass)}
+            onClick={() => setMobileMenuOpen(true)}
+            aria-label="Open Menu"
+          >
+            <Menu size={28} />
+          </button>
         </div>
       </nav>
 
@@ -144,22 +148,23 @@ const Navbar = () => {
             animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-[60] bg-background/80 flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[9999] bg-background/95 flex flex-col items-center justify-center overscroll-none touch-none"
           >
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute top-6 right-6 p-4 text-foreground hover:text-primary min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="absolute top-6 right-6 p-4 text-foreground hover:text-primary min-h-[44px] min-w-[44px] flex items-center justify-center z-[10000]"
+              aria-label="Close Menu"
             >
               <X size={32} />
             </button>
 
-            <div className="flex flex-col gap-8 text-center">
+            <div className="flex flex-col gap-6 text-center w-full px-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-3xl font-serif text-foreground hover:text-primary transition-colors py-2"
+                  className="text-3xl font-serif text-foreground hover:text-primary transition-colors py-4 w-full block active:scale-95 duration-200"
                 >
                   {link.name}
                 </Link>
@@ -168,15 +173,27 @@ const Navbar = () => {
               <div className="h-px w-24 bg-border mx-auto my-4" />
 
               {/* Mobile Theme Toggle */}
-              <div className="flex gap-4 justify-center">
-                <button onClick={() => setTheme('light')} className={cn("p-4 rounded-full border min-h-[44px] min-w-[44px] flex items-center justify-center", theme === 'light' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
-                  <Sun size={24} />
+              <div className="flex gap-6 justify-center">
+                <button 
+                  onClick={() => setTheme('light')} 
+                  className={cn("p-4 rounded-full border-2 min-h-[56px] min-w-[56px] flex items-center justify-center transition-all", theme === 'light' ? "border-primary text-primary bg-primary/10" : "border-border text-muted-foreground")}
+                  aria-label="Light Mode"
+                >
+                  <Sun size={28} />
                 </button>
-                <button onClick={() => setTheme('dark')} className={cn("p-4 rounded-full border min-h-[44px] min-w-[44px] flex items-center justify-center", theme === 'dark' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
-                  <Moon size={24} />
+                <button 
+                  onClick={() => setTheme('dark')} 
+                  className={cn("p-4 rounded-full border-2 min-h-[56px] min-w-[56px] flex items-center justify-center transition-all", theme === 'dark' ? "border-primary text-primary bg-primary/10" : "border-border text-muted-foreground")}
+                  aria-label="Dark Mode"
+                >
+                  <Moon size={28} />
                 </button>
-                <button onClick={() => setTheme('coastal')} className={cn("p-4 rounded-full border min-h-[44px] min-w-[44px] flex items-center justify-center", theme === 'coastal' ? "border-primary text-primary" : "border-border text-muted-foreground")}>
-                  <Cloud size={24} />
+                <button 
+                  onClick={() => setTheme('coastal')} 
+                  className={cn("p-4 rounded-full border-2 min-h-[56px] min-w-[56px] flex items-center justify-center transition-all", theme === 'coastal' ? "border-primary text-primary bg-primary/10" : "border-border text-muted-foreground")}
+                  aria-label="Coastal Mode"
+                >
+                  <Cloud size={28} />
                 </button>
               </div>
             </div>

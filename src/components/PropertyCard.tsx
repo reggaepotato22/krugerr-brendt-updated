@@ -60,6 +60,7 @@ const PropertyCard = ({ property }: { property: Property }) => {
             transition={{ duration: 0.3 }}
             src={images[currentImage]}
             alt={property.title}
+            loading="lazy"
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.2}
@@ -99,7 +100,7 @@ const PropertyCard = ({ property }: { property: Property }) => {
         />
       </div>
 
-      <div className="p-6 relative bg-card">
+      <div className="p-4 md:p-6 relative bg-card">
         <div className="mb-4">
           <h3 className="text-lg font-serif text-foreground tracking-wide mb-1 line-clamp-1 group-hover:text-primary transition-colors">{property.title}</h3>
           <div className="flex items-center gap-1 text-muted-foreground text-xs tracking-widest uppercase">

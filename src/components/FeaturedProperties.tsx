@@ -50,8 +50,8 @@ const FeaturedProperties = () => {
   };
 
   return (
-    <section className="py-24 bg-background transition-colors duration-300">
-      <div className="container mx-auto px-6">
+    <section className="py-16 md:py-24 bg-background transition-colors duration-300">
+      <div className="container mx-auto px-4 md:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -75,7 +75,7 @@ const FeaturedProperties = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
         >
           {displayProperties.map((property) => (
             <motion.div key={property.id} variants={itemVariants}>
@@ -84,8 +84,8 @@ const FeaturedProperties = () => {
           ))}
         </motion.div>
         
-        <div className="mt-12 text-center md:hidden">
-          <Link to="/buy" className="text-primary font-medium border-b-2 border-primary pb-1 hover:text-foreground hover:border-foreground transition-colors uppercase text-sm tracking-wide">
+        <div className="mt-8 md:hidden text-center">
+          <Link to="/buy" className="inline-block py-3 px-6 bg-primary/10 text-primary font-bold uppercase text-sm tracking-wide rounded-sm">
             View All Properties
           </Link>
         </div>
