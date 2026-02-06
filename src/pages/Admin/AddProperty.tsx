@@ -38,7 +38,7 @@ const AddProperty = () => {
       if (property) {
         setFormData({
           title: property.title || '',
-          description: property.description,
+          description: property.description || '',
           price: property.price.toString(),
           currency: 'KES',
           location: property.location,
