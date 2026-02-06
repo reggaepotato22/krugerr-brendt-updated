@@ -1,9 +1,11 @@
 import PropertyCard from './PropertyCard';
 import { Link } from 'react-router-dom';
-import { properties } from '../data/properties';
+import { useProperty } from '../context/PropertyContext';
 import { motion } from 'framer-motion';
 
 const FeaturedProperties = () => {
+  const { properties } = useProperty();
+
   // Select specific properties to feature (mix of Sale and Rent)
   // We want to show:
   // 1. Beachfront Villa (Sale) - id: '1'
@@ -20,6 +22,10 @@ const FeaturedProperties = () => {
   const sortedProperties = featuredIds
     .map(id => featuredProperties.find(p => p.id === id))
     .filter((p): p is typeof properties[0] => p !== undefined);
+
+  // Fallback if no specific featured properties found (e.g., initial load or deleted)
+  // Just show first 6 properties
+  const displayProperties = sortedProperties.length > 0 ? sortedProperties : properties.slice(0, 6);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -71,7 +77,7 @@ const FeaturedProperties = () => {
           viewport={{ once: true, margin: "-50px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {sortedProperties.map((property) => (
+          {displayProperties.map((property) => (
             <motion.div key={property.id} variants={itemVariants}>
               <PropertyCard property={property} />
             </motion.div>

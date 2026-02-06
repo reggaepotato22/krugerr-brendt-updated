@@ -9,6 +9,7 @@
     --color-text: 26 26 26; /* #1a1a1a */
     --color-text-muted: 75 85 99; /* gray-600 */
     --color-primary: 197 160 89; /* #C5A059 (Gold) */
+    --color-primary-foreground: 255 255 255; /* White for better aesthetic, verify contrast */
     --color-secondary: 243 244 246; /* #F3F4F6 (Light Gray) */
     --color-border: 229 231 235; /* gray-200 */
     --color-card: 255 255 255;
@@ -21,6 +22,7 @@
     --color-text: 243 244 246; /* #f3f4f6 */
     --color-text-muted: 156 163 175; /* gray-400 */
     --color-primary: 212 184 126; /* #D4B87E (Muted Bronze/Gold) */
+    --color-primary-foreground: 18 18 18; /* Dark text on Gold */
     --color-secondary: 30 30 30; /* #1E1E1E */
     --color-border: 45 45 45;
     --color-card: 24 24 24;
@@ -33,6 +35,7 @@
     --color-text: 241 245 249; /* #f1f5f9 */
     --color-text-muted: 148 163 184; /* slate-400 */
     --color-primary: 203 213 225; /* #cbd5e1 (Silver/Platinum) */
+    --color-primary-foreground: 15 23 42; /* Dark text on Silver */
     --color-secondary: 30 41 59; /* #1e293b (Slate 800) */
     --color-border: 51 65 85; /* slate-700 */
     --color-card: 30 41 59;

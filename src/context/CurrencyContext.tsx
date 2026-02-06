@@ -6,7 +6,7 @@ export type Currency = 'KES' | 'USD' | 'GBP' | 'EUR';
 interface CurrencyContextType {
   currency: Currency;
   setCurrency: (currency: Currency) => void;
-  formatPrice: (priceString: string) => string;
+  formatPrice: (priceString: string | number) => string;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
@@ -36,9 +36,17 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('krugerr_currency', currency);
   }, [currency]);
 
-  const parsePrice = (priceString: string): { value: number; currency: Currency } => {
+  const parsePrice = (priceString: string | number): { value: number; currency: Currency } => {
+    // Handle number input directly
+    if (typeof priceString === 'number') {
+      return { value: priceString, currency: 'KES' };
+    }
+    
+    // Safety check for undefined/null
+    if (!priceString) return { value: 0, currency: 'KES' };
+
     // Remove commas and clean string
-    const clean = priceString.replace(/,/g, '').trim();
+    const clean = priceString.toString().replace(/,/g, '').trim();
     let value = 0;
     let curr: Currency = 'KES';
 
@@ -62,10 +70,10 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     return { value: isNaN(value) ? 0 : value, currency: curr };
   };
 
-  const formatPrice = (priceString: string): string => {
+  const formatPrice = (priceString: string | number): string => {
     const { value, currency: sourceCurrency } = parsePrice(priceString);
     
-    if (value === 0) return priceString;
+    if (value === 0) return priceString.toString();
     
     // If rates are not loaded yet, use hardcoded approximation or return original
     // Fallback to approximate rates if fetch failed

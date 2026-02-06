@@ -1,19 +1,19 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { DivIcon, LatLngBoundsExpression } from 'leaflet';
-import { useProperties } from '../hooks/useProperties';
+import { useProperty } from '../context/PropertyContext';
 import { Link } from 'react-router-dom';
 import { MapPin, ArrowRight, Building2, Star } from 'lucide-react';
 import { useEffect } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 // Create custom DivIcons using Lucide React components
-const createCustomIcon = (icon: JSX.Element, color: string, size: number = 32) => {
+const createCustomIcon = (icon: JSX.Element, color: string, arrowColor: string, size: number = 32) => {
   const html = renderToStaticMarkup(
     <div className="relative flex items-center justify-center transform -translate-x-1/2 -translate-y-1/2 transition-transform hover:scale-110">
       <div className={`relative z-10 p-2 rounded-full shadow-lg ${color} text-white`}>
         {icon}
       </div>
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-current text-gray-800 opacity-50"></div>
+      <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-current ${arrowColor} opacity-90`}></div>
     </div>
   );
 
@@ -26,8 +26,8 @@ const createCustomIcon = (icon: JSX.Element, color: string, size: number = 32) =
   });
 };
 
-const HeadOfficeIcon = createCustomIcon(<Star size={20} fill="currentColor" />, 'bg-primary');
-const PropertyIcon = createCustomIcon(<Building2 size={18} />, 'bg-blue-600');
+const HeadOfficeIcon = createCustomIcon(<Star size={20} fill="currentColor" />, 'bg-primary', 'text-primary');
+const PropertyIcon = createCustomIcon(<Building2 size={18} />, 'bg-blue-600', 'text-blue-600');
 
 // Component to handle map bounds
 const MapController = ({ 
@@ -56,7 +56,7 @@ const MapController = ({
 };
 
 const MapSearch = () => {
-  const { properties } = useProperties();
+  const { properties } = useProperty();
   // Kilifi Coordinates (Head Office)
   const headOfficeCoords: [number, number] = [-3.6307, 39.8499];
 
@@ -85,10 +85,10 @@ const MapSearch = () => {
                 <div className="bg-primary/10 p-1.5 rounded-full">
                   <MapPin className="w-4 h-4 text-primary" />
                 </div>
-                <h3 className="font-serif font-bold text-secondary text-lg">Head Office</h3>
+                <h3 className="font-serif font-bold text-foreground text-lg">Head Office</h3>
               </div>
-              <p className="text-gray-600 text-sm mb-1">Krugerr Brendt International</p>
-              <p className="text-gray-500 text-xs">Kilifi, Kenya</p>
+              <p className="text-muted-foreground text-sm mb-1">Krugerr Brendt International</p>
+              <p className="text-muted-foreground text-xs">Kilifi, Kenya</p>
               <div className="mt-2 text-xs text-primary font-bold uppercase tracking-wide">Global Headquarters</div>
             </div>
           </Popup>
@@ -104,21 +104,27 @@ const MapSearch = () => {
             >
               <Popup>
                 <div className="p-1 min-w-[200px]">
-                  <div className="relative h-24 mb-2 overflow-hidden rounded-sm">
-                    <img 
-                      src={property.images[0]} 
-                      alt={property.title}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="relative h-24 mb-2 overflow-hidden rounded-sm bg-muted">
+                    {property.images && property.images.length > 0 ? (
+                      <img 
+                        src={property.images[0]} 
+                        alt={property.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
+                        No Image
+                      </div>
+                    )}
                     <div className="absolute top-1 right-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded-sm">
                       {property.type}
                     </div>
                   </div>
-                  <h3 className="font-bold text-secondary text-sm mb-1 line-clamp-1">{property.title}</h3>
+                  <h3 className="font-bold text-foreground text-sm mb-1 line-clamp-1">{property.title}</h3>
                   <p className="text-primary font-serif text-sm mb-2">{property.price}</p>
                   <Link 
                     to={`/property/${property.id}`}
-                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-primary transition-colors uppercase tracking-wider font-medium"
+                    className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors uppercase tracking-wider font-medium"
                   >
                     View Details <ArrowRight className="w-3 h-3" />
                   </Link>

@@ -23,7 +23,7 @@ const CurrencySelector = () => {
     <div className="relative z-50">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-white hover:text-primary transition-colors group"
+        className="flex items-center gap-2 text-inherit hover:text-primary transition-colors group"
       >
         <Globe className="w-4 h-4" />
         <span className="text-xs font-medium tracking-widest uppercase">{currency}</span>
@@ -36,14 +36,14 @@ const CurrencySelector = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute right-0 mt-4 w-48 bg-secondary border border-white/10 shadow-xl rounded-sm py-2"
+            className="absolute right-0 mt-4 w-48 bg-card border border-border shadow-xl rounded-sm py-2"
           >
             {currencies.map((c) => (
               <button
                 key={c.code}
                 onClick={() => handleSelect(c.code)}
-                className={`w-full text-left px-4 py-3 text-xs uppercase tracking-wide flex items-center justify-between hover:bg-white/5 transition-colors ${
-                  currency === c.code ? 'text-primary' : 'text-gray-400'
+                className={`w-full text-left px-4 py-3 text-xs uppercase tracking-wide flex items-center justify-between hover:bg-muted transition-colors ${
+                  currency === c.code ? 'text-primary' : 'text-muted-foreground'
                 }`}
               >
                 <span>{c.name}</span>

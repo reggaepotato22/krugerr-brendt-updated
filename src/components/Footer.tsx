@@ -81,6 +81,13 @@ const Footer = () => {
             <Link to="/admin/crm" className="hover:text-foreground transition-colors opacity-50 hover:opacity-100">Admin</Link>
           </div>
         </div>
+        
+        {/* Trademark / Developer Credit */}
+        <div className="mt-8 text-center border-t border-border/40 pt-4">
+            <p className="text-[10px] text-muted-foreground/60 tracking-wider">
+                Built by <a href="https://andygosystems.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-semibold">andygosystems.com</a>
+            </p>
+        </div>
       </div>
     </footer>
   );

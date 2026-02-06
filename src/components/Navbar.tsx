@@ -55,7 +55,11 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Brand: Logo + Text */}
-          <Link to="/" className="flex items-center gap-4 group">
+          <Link 
+            to="/" 
+            className="flex items-center gap-4 group"
+            onClick={() => window.scrollTo(0, 0)}
+          >
             <div className="relative flex items-center justify-center">
               <img 
                 src="/logo-gold.png" 
@@ -83,6 +87,7 @@ const Navbar = () => {
               <Link 
                 key={link.name}
                 to={link.href} 
+                onClick={() => window.scrollTo(0, 0)}
                 className={cn("text-xs font-medium tracking-widest hover:text-primary transition-colors uppercase", textColorClass)}
               >
                 {link.name}
@@ -112,7 +117,9 @@ const Navbar = () => {
               </div>
             </div>
 
-            <CurrencySelector />
+            <div className={textColorClass}>
+              <CurrencySelector />
+            </div>
           </div>
 
           {/* Mobile Menu Toggle (Only visible if bottom bar is hidden, but usually we hide this if we have bottom bar) 

@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { CurrencyProvider } from './context/CurrencyContext';
+import { ProjectProvider } from './context/ProjectContext';
 import HomePage from './pages/HomePage';
 import PropertyDetails from './pages/PropertyDetails';
 import BuyPage from './pages/BuyPage';
 import RentPage from './pages/RentPage';
 import PlaceholderPage from './pages/PlaceholderPage';
 import AIAssistant from './components/AIAssistant';
-import NewProjectsPage from './components/NewProjectsPage';
+import NewProjectsPage from './pages/NewProjects';
 import ContactPage from './pages/ContactPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsConditions from './pages/TermsConditions';
@@ -21,14 +21,17 @@ import AdminProperties from './pages/Admin/Properties';
 import AddProperty from './pages/Admin/AddProperty';
 import AdminInquiries from './pages/Admin/Inquiries';
 import Leads from './pages/Admin/Leads';
+import AdminChats from './pages/Admin/Chats';
+import AdminProjects from './pages/Admin/Projects';
+import AddProject from './pages/Admin/AddProject';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
-        <CurrencyProvider>
-          <Routes>
-            {/* Public Routes */}
+        <ProjectProvider>
+            <Routes>
+              {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/property/:id" element={<PropertyDetails />} />
             <Route path="/buy" element={<BuyPage />} />
@@ -59,6 +62,12 @@ function App() {
               </AdminLayout>
             } />
             
+            <Route path="/admin/properties/edit/:id" element={
+              <AdminLayout>
+                <AddProperty />
+              </AdminLayout>
+            } />
+            
             <Route path="/admin/inquiries" element={
               <AdminLayout>
                 <AdminInquiries />
@@ -70,13 +79,37 @@ function App() {
                 <Leads />
               </AdminLayout>
             } />
+            
+            <Route path="/admin/chats" element={
+              <AdminLayout>
+                <AdminChats />
+              </AdminLayout>
+            } />
+
+            <Route path="/admin/projects" element={
+              <AdminLayout>
+                <AdminProjects />
+              </AdminLayout>
+            } />
+            
+            <Route path="/admin/projects/add" element={
+              <AdminLayout>
+                <AddProject />
+              </AdminLayout>
+            } />
+            
+            <Route path="/admin/projects/edit/:id" element={
+              <AdminLayout>
+                <AddProject />
+              </AdminLayout>
+            } />
 
             {/* Fallback */}
             <Route path="*" element={<PlaceholderPage title="Page Not Found" />} />
           </Routes>
           <FloatingSocials />
           <AIAssistant />
-        </CurrencyProvider>
+        </ProjectProvider>
       </AuthProvider>
     </Router>
   );

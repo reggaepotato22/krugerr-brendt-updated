@@ -1,32 +1,16 @@
-import { useEffect, useState } from 'react';
-import { api } from '../../lib/api';
-import { Plus, Trash2, MapPin } from 'lucide-react';
+import { useState } from 'react';
+import { useProperty } from '../../context/PropertyContext';
+import { Plus, Trash2, MapPin, Eye, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCurrency } from '../../context/CurrencyContext';
 
 const AdminProperties = () => {
-  const [properties, setProperties] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { properties, deleteProperty, loading } = useProperty();
+  const { formatPrice } = useCurrency();
 
-  useEffect(() => {
-    fetchProperties();
-  }, []);
-
-  const fetchProperties = async () => {
-    try {
-      const data = await api.getProperties();
-      setProperties(data || []);
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const deleteProperty = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this property?')) return;
-    
-    // API does not implement DELETE yet, showing alert
-    alert("Delete not implemented in PHP API demo yet.");
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this property? This action cannot be undone.')) return;
+    deleteProperty(id);
   };
 
   if (loading) return <div>Loading properties...</div>;
@@ -52,6 +36,7 @@ const AdminProperties = () => {
                 <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Property</th>
                 <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Type</th>
                 <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Price</th>
+                <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Visits</th>
                 <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">Status</th>
                 <th className="p-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
               </tr>
@@ -62,8 +47,8 @@ const AdminProperties = () => {
                   <td className="p-4">
                     <div className="flex items-center gap-4">
                       <div className="w-16 h-16 bg-muted rounded-sm overflow-hidden flex-shrink-0">
-                        {property.image_urls?.[0] ? (
-                          <img src={property.image_urls[0]} alt="" className="w-full h-full object-cover" />
+                        {property.images?.[0] ? (
+                          <img src={property.images[0]} alt="" className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">No Img</div>
                         )}
@@ -82,20 +67,35 @@ const AdminProperties = () => {
                   </td>
                   <td className="p-4">
                     <span className="text-sm font-medium text-primary font-serif">
-                      {property.currency} {property.price.toLocaleString()}
+                      {formatPrice(property.price)}
                     </span>
                   </td>
                   <td className="p-4">
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Eye className="w-3 h-3" />
+                      {property.visits || 0}
+                    </div>
+                  </td>
+                  <td className="p-4">
                     <span className={`text-xs font-bold uppercase px-2 py-1 rounded-sm ${
-                      property.status === 'available' ? 'bg-green-500/10 text-green-500' : 'bg-destructive/10 text-destructive'
+                      property.status === 'sold' ? 'bg-destructive/10 text-destructive' : 
+                      property.status === 'rented' ? 'bg-blue-500/10 text-blue-500' : 
+                      'bg-green-500/10 text-green-500'
                     }`}>
-                      {property.status}
+                      {property.status || 'Available'}
                     </span>
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <Link
+                        to={`/admin/properties/edit/${property.id}`}
+                        className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-sm transition-colors"
+                        title="Edit"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Link>
                       <button 
-                        onClick={() => deleteProperty(property.id)}
+                        onClick={() => handleDelete(property.id)}
                         className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-sm transition-colors"
                         title="Delete"
                       >
@@ -105,13 +105,6 @@ const AdminProperties = () => {
                   </td>
                 </tr>
               ))}
-              {properties.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="p-8 text-center text-muted-foreground">
-                    No properties found.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>

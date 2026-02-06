@@ -1,18 +1,21 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { Upload, X, Loader2 } from 'lucide-react';
+import { useProperty } from '../../context/PropertyContext';
+import { Property } from '../../data/properties';
 
 const AddProperty = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { addProperty, updateProperty, getPropertyById } = useProperty();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   
-  // Use uploading state to show loading indicator if needed, preventing unused variable error
-  console.log("Uploading status:", uploading);
-  
+  const isEditMode = !!id;
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -29,15 +32,33 @@ const AddProperty = () => {
     amenities: ''
   });
 
+  useEffect(() => {
+    if (isEditMode && id) {
+      const property = getPropertyById(id);
+      if (property) {
+        setFormData({
+          title: property.title,
+          description: property.description,
+          price: property.price.toString(),
+          currency: 'KES',
+          location: property.location,
+          type: property.type,
+          status: property.status || 'available',
+          beds: property.beds.toString(),
+          baths: property.baths.toString(),
+          sqft: property.sqft.toString(),
+          lat: property.coords[0].toString(),
+          lng: property.coords[1].toString(),
+          amenities: property.amenities.join(', ')
+        });
+        setPreviews(property.images);
+      }
+    }
+  }, [id, isEditMode, getPropertyById]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
-  // Use handleChange in form elements or just inline as done below. 
-  // To fix linter error, we can just use this handler in the inputs instead of inline arrow functions
-  // But since the code is already using inline arrow functions, we can just log it or remove it.
-  // Ideally, we should use it. Let's make the form use it.
-  console.log("Form handler ready", handleChange);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -57,44 +78,45 @@ const AddProperty = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Use uploading state logic here if complex upload logic existed
-    // For now we just use the variable to satisfy linter
-    if (uploading) console.log("Currently uploading...");
 
     try {
       // 1. Upload Images
-      const uploadedUrls: string[] = [];
-      if (images.length > 0) {
-        setUploading(true);
-        for (const image of images) {
-            const res = await api.uploadImage(image);
-            if (res.url) {
-                uploadedUrls.push(res.url);
-            }
-        }
-        setUploading(false);
-      }
+      // For local demo, we just use the blob URLs if upload fails or if we are in "local mode"
+      // But let's try to use the api.uploadImage to simulate real behavior if possible
+      // Or just use the object URLs since we are storing in localStorage anyway
+      
+      const uploadedUrls: string[] = [...previews]; // Default to previews for local
 
       // 2. Prepare Data
-      const propertyData = {
-        ...formData,
-        price: parseFloat(formData.price),
+      // Cast to ExtendedProperty type (ignoring id as it is generated)
+      const newProperty: any = {
+        title: formData.title,
+        description: formData.description,
+        price: formData.price, // Keep as string or convert if needed. The Property type says string.
+        location: formData.location,
+        type: formData.type as 'Sale' | 'Rent',
         beds: parseInt(formData.beds) || 0,
         baths: parseInt(formData.baths) || 0,
         sqft: parseInt(formData.sqft) || 0,
         coords: [parseFloat(formData.lat) || 0, parseFloat(formData.lng) || 0],
-        image_urls: uploadedUrls,
-        amenities: formData.amenities.split(',').map(s => s.trim()).filter(Boolean)
+        images: uploadedUrls,
+        amenities: formData.amenities.split(',').map(s => s.trim()).filter(Boolean),
+        status: formData.status as 'available' | 'sold' | 'rented'
       };
 
-      // 3. Send to API
-      await api.addProperty(propertyData);
+      // 3. Add or Update Context
+      if (isEditMode && id) {
+        updateProperty(id, newProperty);
+        alert('Property updated successfully!');
+      } else {
+        addProperty(newProperty);
+        alert('Property added successfully!');
+      }
       
-      alert('Property added successfully!');
       navigate('/admin/properties');
     } catch (error: any) {
-      console.error('Error adding property:', error);
-      alert('Failed to add property');
+      console.error('Error saving property:', error);
+      alert('Failed to save property');
     } finally {
       setLoading(false);
     }
@@ -102,7 +124,9 @@ const AddProperty = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl font-serif font-bold text-foreground mb-8">Add New Property</h1>
+      <h1 className="text-2xl font-serif font-bold text-foreground mb-8">
+        {isEditMode ? 'Edit Property' : 'Add New Property'}
+      </h1>
 
       <form onSubmit={handleSubmit} className="bg-card p-8 rounded-sm shadow-sm border border-border space-y-6">
         {/* Basic Info */}
@@ -114,13 +138,13 @@ const AddProperty = () => {
           <div className="md:col-span-2">
             <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Title</label>
             <input
-              type="text"
-              required
-              value={formData.title}
-              onChange={e => setFormData({...formData, title: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
-              placeholder="e.g. Luxury Villa in Kilifi"
-            />
+                type="text"
+                required
+                value={formData.title}
+                onChange={e => setFormData({...formData, title: e.target.value})}
+                className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+                placeholder="e.g. Luxury Villa in Kilifi"
+              />
           </div>
 
           <div>
@@ -129,7 +153,7 @@ const AddProperty = () => {
               <select
                 value={formData.currency}
                 onChange={e => setFormData({...formData, currency: e.target.value})}
-                className="bg-primary/20 border border-primary/20 border-r-0 p-3 rounded-l-sm focus:outline-none text-foreground"
+                className="bg-input border border-input border-r-0 p-3 rounded-l-sm focus:outline-none text-foreground"
               >
                 <option value="KES">KES</option>
                 <option value="USD">USD</option>
@@ -141,7 +165,7 @@ const AddProperty = () => {
                 required
                 value={formData.price}
                 onChange={e => setFormData({...formData, price: e.target.value})}
-                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-r-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+                className="w-full bg-input border border-input p-3 rounded-r-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
                 placeholder="0.00"
               />
             </div>
@@ -152,7 +176,7 @@ const AddProperty = () => {
             <select
               value={formData.type}
               onChange={e => setFormData({...formData, type: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+              className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             >
               <option value="Sale">For Sale</option>
               <option value="Rent">For Rent</option>
@@ -166,7 +190,7 @@ const AddProperty = () => {
               required
               value={formData.location}
               onChange={e => setFormData({...formData, location: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+              className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
               placeholder="City, Area"
             />
           </div>
@@ -178,7 +202,7 @@ const AddProperty = () => {
                 type="text"
                 value={formData.lat}
                 onChange={e => setFormData({...formData, lat: e.target.value})}
-                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+                className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
                 placeholder="-1.2921"
               />
             </div>
@@ -188,7 +212,7 @@ const AddProperty = () => {
                 type="text"
                 value={formData.lng}
                 onChange={e => setFormData({...formData, lng: e.target.value})}
-                className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+                className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
                 placeholder="36.8219"
               />
             </div>
@@ -204,7 +228,7 @@ const AddProperty = () => {
               type="number"
               value={formData.beds}
               onChange={e => setFormData({...formData, beds: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+              className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div>
@@ -213,7 +237,7 @@ const AddProperty = () => {
               type="number"
               value={formData.baths}
               onChange={e => setFormData({...formData, baths: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+              className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div>
@@ -222,7 +246,7 @@ const AddProperty = () => {
               type="number"
               value={formData.sqft}
               onChange={e => setFormData({...formData, sqft: e.target.value})}
-              className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+              className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             />
           </div>
         </div>
@@ -233,7 +257,7 @@ const AddProperty = () => {
             type="text"
             value={formData.amenities}
             onChange={e => setFormData({...formData, amenities: e.target.value})}
-            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+            className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
             placeholder="Pool, Gym, Security (comma separated)"
           />
         </div>
@@ -244,7 +268,7 @@ const AddProperty = () => {
             rows={4}
             value={formData.description}
             onChange={e => setFormData({...formData, description: e.target.value})}
-            className="w-full bg-primary/10 border border-primary/20 p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
+            className="w-full bg-input border border-input p-3 rounded-sm focus:outline-none focus:border-primary focus:bg-card transition-colors text-foreground placeholder:text-muted-foreground"
           ></textarea>
         </div>
 
@@ -255,7 +279,7 @@ const AddProperty = () => {
             <input
               type="file"
               multiple
-              accept="image/*"
+              accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/webp"
               onChange={handleImageChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />

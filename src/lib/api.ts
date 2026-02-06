@@ -77,24 +77,14 @@ export const api = {
   // Inquiries
   getInquiries: async () => {
     try {
-        const res = await fetch(`${API_BASE}/inquiries.php`);
-        if (!res.ok || !isJson(res)) throw new Error("API unavailable");
-        return await res.json();
+      const res = await fetch(`${API_BASE}/inquiries.php`);
+      if (!res.ok || !isJson(res)) throw new Error("API unavailable");
+      return await res.json();
     } catch (e) {
-        console.warn("Using Local Storage for Inquiries");
-        const localLeads = getLeads();
-        // Map local format to API format
-        return localLeads.map(l => ({
-            id: l.id,
-            customer_name: l.name,
-            email: l.email,
-            message: l.message,
-            property_id: l.propertyId,
-            property_title: l.propertyTitle,
-            property_image: null,
-            status: l.status,
-            created_at: l.date
-        }));
+      console.warn("Using Local Storage for Inquiries");
+      // Use krugerr_inquiries to match InquiryContext
+      const saved = localStorage.getItem('krugerr_inquiries');
+      return saved ? JSON.parse(saved) : [];
     }
   },
 
@@ -109,23 +99,24 @@ export const api = {
       return await res.json();
     } catch (e) {
       console.warn("API Error (Using Local Storage for Demo):", e);
-      // Fallback: Save to Local Storage
-      saveLead({
-        name: inquiryData.customer_name,
-        email: inquiryData.email,
-        phone: inquiryData.phone || '', // Ensure phone is passed if available
-        message: inquiryData.message,
-        propertyId: inquiryData.property_id,
-        propertyTitle: inquiryData.subject // Using subject as title proxy for now
-      });
+      // Fallback: Save to Local Storage (krugerr_inquiries)
+      const saved = localStorage.getItem('krugerr_inquiries');
+      const inquiries = saved ? JSON.parse(saved) : [];
       
-      // Simulate WhatsApp Notification for Demo
-      console.log(`[DEMO MODE] WhatsApp Notification Sent to +254 733 323 273:`, {
-        to: "254733323273",
-        message: `New Lead: ${inquiryData.customer_name} - ${inquiryData.message.substring(0, 50)}...`
-      });
+      const newInquiry = {
+        ...inquiryData,
+        id: Math.random().toString(36).substr(2, 9),
+        status: 'new',
+        date: new Date().toISOString()
+      };
+      
+      inquiries.unshift(newInquiry);
+      localStorage.setItem('krugerr_inquiries', JSON.stringify(inquiries));
+      
+      // Simulate WhatsApp Notification
+      console.log(`[DEMO MODE] WhatsApp Notification Sent:`, inquiryData);
 
-      return { message: "Inquiry saved locally (Demo Mode)" };
+      return { message: "Inquiry saved locally (Demo Mode)", id: newInquiry.id };
     }
   },
 
@@ -139,8 +130,118 @@ export const api = {
       if (!res.ok || !isJson(res)) throw new Error("API unavailable");
       return await res.json();
     } catch (e) {
-        updateLeadStatus(id, status as any);
+        // Local fallback
+        const saved = localStorage.getItem('krugerr_inquiries');
+        if (saved) {
+            const inquiries = JSON.parse(saved);
+            const updated = inquiries.map((i: any) => i.id === id ? { ...i, status } : i);
+            localStorage.setItem('krugerr_inquiries', JSON.stringify(updated));
+        }
         return { message: "Updated locally" };
+    }
+  },
+
+  updateInquiryNotes: async (id: string, notes: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/inquiries.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, notes, action: 'update_notes' }),
+      });
+      if (!res.ok || !isJson(res)) throw new Error("API unavailable");
+      return await res.json();
+    } catch (e) {
+        // Local fallback
+        const saved = localStorage.getItem('krugerr_inquiries');
+        if (saved) {
+            const inquiries = JSON.parse(saved);
+            const updated = inquiries.map((i: any) => i.id === id ? { ...i, notes } : i);
+            localStorage.setItem('krugerr_inquiries', JSON.stringify(updated));
+        }
+        return { message: "Updated locally" };
+    }
+  },
+
+  // Chats
+  getChats: async () => {
+    try {
+      const res = await fetch(`${API_BASE}/chats.php`);
+      if (!res.ok || !isJson(res)) throw new Error("API unavailable");
+      return await res.json();
+    } catch (e) {
+      console.warn("Using Local Storage for Chats");
+      const saved = localStorage.getItem('krugerr_chats');
+      return saved ? JSON.parse(saved) : [];
+    }
+  },
+
+  startChatSession: async (session: any) => {
+    try {
+      const res = await fetch(`${API_BASE}/chats.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...session, action: 'start_session' }),
+      });
+      if (!res.ok || !isJson(res)) throw new Error("API unavailable");
+      return await res.json();
+    } catch (e) {
+      // Local fallback
+      const saved = localStorage.getItem('krugerr_chats');
+      const sessions = saved ? JSON.parse(saved) : [];
+      sessions.unshift(session);
+      localStorage.setItem('krugerr_chats', JSON.stringify(sessions));
+      return { message: "Session started locally" };
+    }
+  },
+
+  addChatMessage: async (sessionId: string, message: any) => {
+    try {
+      const res = await fetch(`${API_BASE}/chats.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, ...message, action: 'add_message' }),
+      });
+      if (!res.ok || !isJson(res)) throw new Error("API unavailable");
+      return await res.json();
+    } catch (e) {
+      // Local fallback
+      const saved = localStorage.getItem('krugerr_chats');
+      if (saved) {
+        const sessions = JSON.parse(saved);
+        const updated = sessions.map((s: any) => {
+          if (s.id === sessionId) {
+            return {
+              ...s,
+              messages: [...s.messages, message],
+              lastMessageTime: message.timestamp
+            };
+          }
+          return s;
+        });
+        localStorage.setItem('krugerr_chats', JSON.stringify(updated));
+      }
+      return { message: "Message added locally" };
+    }
+  },
+
+  deleteChatSession: async (sessionId: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/chats.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, action: 'delete_session' }),
+      });
+      if (!res.ok || !isJson(res)) throw new Error("API unavailable");
+      return await res.json();
+    } catch (e) {
+      // Local fallback
+      const saved = localStorage.getItem('krugerr_chats');
+      if (saved) {
+        const sessions = JSON.parse(saved);
+        const updated = sessions.filter((s: any) => s.id !== sessionId);
+        localStorage.setItem('krugerr_chats', JSON.stringify(updated));
+      }
+      return { message: "Session deleted locally" };
     }
   }
 };

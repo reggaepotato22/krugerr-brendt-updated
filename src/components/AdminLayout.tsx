@@ -8,7 +8,9 @@ import {
   MessageSquare, 
   LogOut, 
   Menu,
-  X
+  X,
+  Bot,
+  Hammer
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -36,7 +38,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
@@ -47,15 +49,17 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navItems = [
     { path: '/admin', icon: LayoutDashboard, label: 'Overview' },
     { path: '/admin/properties', icon: Building2, label: 'All Properties' },
-    { path: '/admin/properties/add', icon: PlusCircle, label: 'Add New' },
+    { path: '/admin/projects', icon: Hammer, label: 'New Projects' },
+    { path: '/admin/properties/add', icon: PlusCircle, label: 'Add Property' },
     { path: '/admin/leads', icon: MessageSquare, label: 'Leads Management' },
+    { path: '/admin/chats', icon: Bot, label: 'AI Conversations' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen bg-muted/30 flex">
       {/* Mobile Sidebar Toggle */}
       <button 
-        className="lg:hidden fixed top-4 right-4 z-50 bg-secondary text-white p-2 rounded-sm shadow-lg"
+        className="lg:hidden fixed top-4 right-4 z-50 bg-secondary text-secondary-foreground p-2 rounded-sm shadow-lg"
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
         {isSidebarOpen ? <X /> : <Menu />}
@@ -63,14 +67,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
       {/* Sidebar */}
       <aside className={`
-        fixed lg:static inset-y-0 left-0 z-40 w-64 bg-secondary text-white transform transition-transform duration-300 ease-in-out
+        fixed lg:static inset-y-0 left-0 z-40 w-64 bg-card border-r border-border text-card-foreground transform transition-transform duration-300 ease-in-out
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        <div className="p-6 border-b border-white/10">
+        <div className="p-6 border-b border-border">
           <h2 className="font-serif text-xl font-bold tracking-widest">
             KRUGERR<span className="text-primary">.</span>
           </h2>
-          <p className="text-xs text-gray-400 mt-1 uppercase tracking-wider">Admin Portal</p>
+          <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wider">Admin Portal</p>
         </div>
 
         <nav className="p-4 space-y-2">
@@ -82,8 +86,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 to={item.path}
                 className={`flex items-center gap-3 px-4 py-3 rounded-sm transition-colors text-sm font-medium tracking-wide uppercase ${
                   isActive 
-                    ? 'bg-primary text-secondary' 
-                    : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                    ? 'bg-primary text-primary-foreground' 
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
                 onClick={() => setIsSidebarOpen(false)}
               >
@@ -94,13 +98,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
           <button
             onClick={() => {
               signOut();
               navigate('/');
             }}
-            className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-white/5 w-full rounded-sm transition-colors text-sm font-medium tracking-wide uppercase"
+            className="flex items-center gap-3 px-4 py-3 text-destructive hover:bg-muted w-full rounded-sm transition-colors text-sm font-medium tracking-wide uppercase"
           >
             <LogOut className="w-4 h-4" />
             Sign Out
@@ -109,9 +113,15 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 lg:p-8 overflow-y-auto h-screen">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 p-4 lg:p-8 overflow-y-auto h-screen flex flex-col">
+        <div className="max-w-7xl mx-auto w-full flex-grow">
           {children}
+        </div>
+
+        <div className="mt-8 text-center border-t border-border/40 pt-4">
+          <p className="text-[10px] text-muted-foreground/60 tracking-wider">
+            Built by <a href="https://andygosystems.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-semibold">andygosystems.com</a>
+          </p>
         </div>
       </main>
 

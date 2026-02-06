@@ -60,11 +60,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setLoading(false);
       }
+    }).catch(err => {
+      console.error("Auth session check failed:", err);
+      setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
-         fetchProfile(session.user.id, session.user.email!);
+         fetchProfile(session.user.id, session.user.email ?? '');
       } else {
         setUser(null);
         setLoading(false);
@@ -72,6 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = async (email: string, pass: string) => {

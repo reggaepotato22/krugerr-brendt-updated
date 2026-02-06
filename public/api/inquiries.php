@@ -32,8 +32,22 @@ if ($method === 'POST') {
     $db_saved = false;
     $email_sent = false;
     
+    // Handle specific actions
+    if (isset($data['action']) && $data['action'] === 'update_notes' && $conn) {
+        $query = "UPDATE inquiries SET notes = :notes WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(":notes", $data['notes']);
+        $stmt->bindParam(":id", $data['id']);
+        if ($stmt->execute()) {
+            echo json_encode(["message" => "Notes updated"]);
+        } else {
+            echo json_encode(["error" => "Failed to update notes"]);
+        }
+        exit();
+    }
+
     // Update Status (Only if DB connected)
-    if (isset($data['id']) && isset($data['status']) && $conn) {
+    if (isset($data['id']) && isset($data['status']) && !isset($data['action']) && $conn) {
         $query = "UPDATE inquiries SET status = :status WHERE id = :id";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(":status", $data['status']);
@@ -50,10 +64,11 @@ if ($method === 'POST') {
     // 1. Try to save to DB
     if ($conn) {
         try {
-            $query = "INSERT INTO inquiries (customer_name, email, message, property_id) VALUES (:name, :email, :message, :pid)";
+            $query = "INSERT INTO inquiries (customer_name, email, phone, message, property_id) VALUES (:name, :email, :phone, :message, :pid)";
             $stmt = $conn->prepare($query);
             $stmt->bindParam(":name", $data['customer_name']);
             $stmt->bindParam(":email", $data['email']);
+            $stmt->bindParam(":phone", $data['phone']); // Add phone
             $stmt->bindParam(":message", $data['message']);
             
             // Handle nullable property_id

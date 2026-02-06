@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { motion } from 'framer-motion';
-import { api } from '../lib/api';
+import { useInquiry } from '../context/InquiryContext';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
 const ContactPage = () => {
+  const { addInquiry } = useInquiry();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
-    message: ''
+    message: '',
+    phone: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -25,15 +27,16 @@ const ContactPage = () => {
     setSubmitStatus('idle');
     
     try {
-      await api.sendInquiry({
+      addInquiry({
         customer_name: formData.name,
         email: formData.email,
+        phone: formData.phone,
         subject: formData.subject,
         message: formData.message
       });
       
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } catch (error) {
       console.error("Failed to send message", error);
@@ -60,7 +63,7 @@ const ContactPage = () => {
           <motion.h1 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="text-4xl md:text-5xl font-serif text-foreground mb-4 tracking-wider"
+            className="text-4xl md:text-5xl font-serif text-secondary-foreground mb-4 tracking-wider"
           >
             Get in Touch
           </motion.h1>
@@ -68,7 +71,7 @@ const ContactPage = () => {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-muted-foreground text-lg tracking-wide"
+            className="text-secondary-foreground/80 text-lg tracking-wide"
           >
             We are here to assist you with your luxury real estate needs.
           </motion.p>
@@ -168,18 +171,32 @@ const ContactPage = () => {
                 </div>
               </div>
               
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-1">Subject</label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-input border border-border text-foreground rounded-sm focus:bg-card focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
-                  placeholder="Property Inquiry"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-1">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-input border border-border text-foreground rounded-sm focus:bg-card focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                    placeholder="+254 700 000 000"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-1">Subject</label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 bg-input border border-border text-foreground rounded-sm focus:bg-card focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-muted-foreground"
+                    placeholder="Property Inquiry"
+                  />
+                </div>
               </div>
               
               <div>
@@ -199,7 +216,7 @@ const ContactPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full md:w-auto px-8 py-3 bg-secondary text-white font-medium tracking-widest uppercase hover:bg-primary hover:text-secondary transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full md:w-auto px-8 py-3 bg-secondary text-secondary-foreground font-medium tracking-widest uppercase hover:bg-primary hover:text-primary-foreground transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Sending...' : 'Send Message'}
                 {!isSubmitting && <Send className="w-4 h-4" />}

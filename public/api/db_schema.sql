@@ -39,3 +39,28 @@ CREATE TABLE IF NOT EXISTS `inquiries` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Updates for Inquiries (Run these if table already exists)
+-- ALTER TABLE `inquiries` ADD COLUMN `phone` varchar(50) DEFAULT NULL AFTER `email`;
+-- ALTER TABLE `inquiries` ADD COLUMN `notes` text DEFAULT NULL AFTER `status`;
+
+-- Chat System
+CREATE TABLE IF NOT EXISTS `chat_sessions` (
+  `id` varchar(50) NOT NULL,
+  `start_time` datetime NOT NULL,
+  `last_message_time` datetime NOT NULL,
+  `status` varchar(20) DEFAULT 'active',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `chat_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(50) NOT NULL,
+  `message` text NOT NULL,
+  `is_bot` tinyint(1) DEFAULT '0',
+  `is_action` tinyint(1) DEFAULT '0',
+  `timestamp` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `session_id` (`session_id`),
+  CONSTRAINT `fk_chat_messages` FOREIGN KEY (`session_id`) REFERENCES `chat_sessions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

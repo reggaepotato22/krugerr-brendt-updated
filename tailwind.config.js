@@ -10,7 +10,7 @@ export default {
       colors: {
         primary: {
           DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
-          foreground: 'rgb(var(--color-bg) / <alpha-value>)',
+          foreground: 'rgb(var(--color-primary-foreground) / <alpha-value>)',
         },
         secondary: {
           DEFAULT: 'rgb(var(--color-secondary) / <alpha-value>)',

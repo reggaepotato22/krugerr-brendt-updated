@@ -26,7 +26,7 @@ const SmartSearch = () => {
         <button
           onClick={() => setActiveTab('buy')}
           className={`pb-2 text-sm font-medium tracking-wide uppercase transition-colors border-b-2 min-h-[44px] flex items-center ${
-            activeTab === 'buy' ? 'border-primary text-foreground' : 'border-transparent text-muted hover:text-foreground'
+            activeTab === 'buy' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
           Buy
@@ -34,7 +34,7 @@ const SmartSearch = () => {
         <button
           onClick={() => setActiveTab('rent')}
           className={`pb-2 text-sm font-medium tracking-wide uppercase transition-colors border-b-2 min-h-[44px] flex items-center ${
-            activeTab === 'rent' ? 'border-primary text-foreground' : 'border-transparent text-muted hover:text-foreground'
+            activeTab === 'rent' ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >
           Rent
@@ -43,7 +43,7 @@ const SmartSearch = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
         <div className="relative group">
-          <label className="block text-xs font-bold text-muted uppercase mb-2">Location</label>
+          <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Location</label>
           <div className="relative">
             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
             <select className="w-full pl-10 pr-4 py-3 min-h-[44px] bg-input border border-border focus:outline-none focus:border-primary text-sm appearance-none cursor-pointer text-foreground font-medium hover:border-primary transition-colors rounded-sm">
@@ -55,12 +55,12 @@ const SmartSearch = () => {
               <option className="bg-card text-foreground">Dubai</option>
               <option className="bg-card text-foreground">London</option>
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
 
         <div className="relative group">
-          <label className="block text-xs font-bold text-muted uppercase mb-2">Property Type</label>
+          <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Property Type</label>
           <div className="relative">
             <Home className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
             <select className="w-full pl-10 pr-4 py-3 min-h-[44px] bg-input border border-border focus:outline-none focus:border-primary text-sm appearance-none cursor-pointer text-foreground font-medium hover:border-primary transition-colors rounded-sm">
@@ -70,12 +70,12 @@ const SmartSearch = () => {
               <option className="bg-card text-foreground">Office</option>
               <option className="bg-card text-foreground">Land</option>
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
 
         <div className="relative group">
-          <label className="block text-xs font-bold text-muted uppercase mb-2">Price Range</label>
+          <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Price Range</label>
           <div className="relative">
             <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
             <select className="w-full pl-10 pr-4 py-3 min-h-[44px] bg-input border border-border focus:outline-none focus:border-primary text-sm appearance-none cursor-pointer text-foreground font-medium hover:border-primary transition-colors rounded-sm">
@@ -85,13 +85,13 @@ const SmartSearch = () => {
               <option className="bg-card text-foreground">50M - 100M KES</option>
               <option className="bg-card text-foreground">100M+ KES</option>
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>
         </div>
 
         <button 
           onClick={handleSearch}
-          className="w-full bg-primary hover:bg-primary-light text-secondary font-bold py-3 px-6 min-h-[44px] transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wide text-sm btn-shine rounded-sm"
+          className="w-full bg-primary hover:bg-primary-light text-primary-foreground font-bold py-3 px-6 min-h-[44px] transition-all duration-300 flex items-center justify-center gap-2 uppercase tracking-wide text-sm btn-shine rounded-sm"
         >
           <Search className="w-4 h-4" />
           Search
