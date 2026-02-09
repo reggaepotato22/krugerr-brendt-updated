@@ -58,7 +58,6 @@ const Navbar = () => {
           <Link 
             to="/" 
             className="flex items-center gap-4 group"
-            onClick={() => window.scrollTo(0, 0)}
           >
             <div className="relative flex items-center justify-center">
               <img 
@@ -87,7 +86,6 @@ const Navbar = () => {
               <Link 
                 key={link.name}
                 to={link.href} 
-                onClick={() => window.scrollTo(0, 0)}
                 className={cn("text-xs font-medium tracking-widest hover:text-primary transition-colors uppercase", textColorClass)}
               >
                 {link.name}

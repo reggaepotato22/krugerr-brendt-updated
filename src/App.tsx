@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider } from './context/AuthContext';
 import { ProjectProvider } from './context/ProjectContext';
 import HomePage from './pages/HomePage';
@@ -28,6 +29,7 @@ import AddProject from './pages/Admin/AddProject';
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <ProjectProvider>
             <Routes>
