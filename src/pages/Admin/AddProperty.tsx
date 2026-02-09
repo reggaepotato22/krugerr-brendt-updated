@@ -81,11 +81,22 @@ const AddProperty = () => {
 
     try {
       // 1. Upload Images
-      // For local demo, we just use the blob URLs if upload fails or if we are in "local mode"
-      // But let's try to use the api.uploadImage to simulate real behavior if possible
-      // Or just use the object URLs since we are storing in localStorage anyway
-      
-      const uploadedUrls: string[] = [...previews]; // Default to previews for local
+      const existingUrls = previews.filter(url => !url.startsWith('blob:'));
+      const newUploadedUrls: string[] = [];
+
+      // Upload new files
+      for (const file of images) {
+        try {
+           const { url } = await api.uploadImage(file);
+           if (url) newUploadedUrls.push(url);
+        } catch (uploadError) {
+           console.error("Failed to upload image:", uploadError);
+           // Fallback to blob if upload fails (local only)
+           newUploadedUrls.push(URL.createObjectURL(file));
+        }
+      }
+
+      const finalImages = [...existingUrls, ...newUploadedUrls];
 
       // 2. Prepare Data
       // Cast to ExtendedProperty type (ignoring id as it is generated)
@@ -99,17 +110,17 @@ const AddProperty = () => {
         baths: parseInt(formData.baths) || 0,
         sqft: parseInt(formData.sqft) || 0,
         coords: [parseFloat(formData.lat) || 0, parseFloat(formData.lng) || 0],
-        images: uploadedUrls,
+        images: finalImages,
         amenities: formData.amenities.split(',').map(s => s.trim()).filter(Boolean),
         status: formData.status as 'available' | 'sold' | 'rented'
       };
 
       // 3. Add or Update Context
       if (isEditMode && id) {
-        updateProperty(id, newProperty);
+        await updateProperty(id, newProperty);
         alert('Property updated successfully!');
       } else {
-        addProperty(newProperty);
+        await addProperty(newProperty);
         alert('Property added successfully!');
       }
       
