@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { properties as initialProperties, Property } from '../data/properties';
-import { supabase } from '../lib/supabase';
 
 // Extend Property type to include optional fields for analytics/management
 export interface ExtendedProperty extends Property {
@@ -8,7 +7,7 @@ export interface ExtendedProperty extends Property {
   isLocal?: boolean; // True if created via Admin Dashboard (stored in localStorage)
   dateAdded?: string;
   status?: 'available' | 'sold' | 'rented';
-  supabaseId?: string; // ID from Supabase
+  supabaseId?: string; // ID from Supabase (unused in demo mode)
 }
 
 interface PropertyContextType {
@@ -28,59 +27,21 @@ export const PropertyProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [properties, setProperties] = useState<ExtendedProperty[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load properties from Supabase + LocalStorage + Hardcoded
+  // Load properties from LocalStorage + Hardcoded (standalone demo mode)
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        
-        // 1. Try Fetching from Supabase
-        let supabaseProperties: ExtendedProperty[] = [];
-        try {
-          const { data, error } = await supabase
-            .from('properties')
-            .select('*')
-            .order('created_at', { ascending: false });
 
-          if (error) throw error;
-          
-          if (data) {
-            supabaseProperties = data.map((p: any) => ({
-              id: p.id?.toString() || p.supabase_id,
-              supabaseId: p.id,
-              title: p.title,
-              price: p.price, // Ensure format matches (string/number handling might be needed)
-              location: p.location,
-              type: p.type,
-              beds: p.beds,
-              baths: p.baths,
-              sqft: p.sqft,
-              images: p.image_urls || p.images || [],
-              description: p.description,
-              amenities: p.amenities,
-              coords: p.coords,
-              visits: p.visits || 0,
-              isLocal: false,
-              dateAdded: p.created_at,
-              status: p.status || 'available'
-            }));
-          }
-        } catch (sbError) {
-          console.warn("Supabase fetch failed (using local/demo mode):", sbError);
-        }
-
-        // 2. Get Local Properties (Admin created, fallback/demo)
+        // 1. Get Local Properties (Admin created)
         const localPropsStr = localStorage.getItem('kb_properties');
         const localProps: ExtendedProperty[] = localPropsStr ? JSON.parse(localPropsStr) : [];
         
-        // 3. Get Analytics (Visits) - Merge with Supabase/Local data
+        // 2. Get Analytics (Visits)
         const analyticsStr = localStorage.getItem('kb_analytics');
         const analytics: Record<string, number> = analyticsStr ? JSON.parse(analyticsStr) : {};
 
-        // 4. Merge Hardcoded Properties with Analytics
-        // Only add hardcoded if we didn't get a full DB response, or if we want to mix them.
-        // Strategy: Always show hardcoded for demo, unless Supabase has data (which replaces them?)
-        // Better: Show Supabase + Local. If both empty, show Hardcoded.
+        // 3. Merge Hardcoded Properties with Analytics
         
         const hardcodedPropsWithStats = initialProperties.map(p => ({
           ...p,
@@ -95,15 +56,8 @@ export const PropertyProvider: React.FC<{ children: ReactNode }> = ({ children }
           isLocal: true
         }));
 
-        // Combine: Supabase > Local > Hardcoded
-        // If Supabase has data, we prioritize it.
-        // We dedup by ID just in case.
-        const allProps = [...supabaseProperties, ...localPropsWithStats, ...hardcodedPropsWithStats];
-        
-        // Remove duplicates based on ID
-        const uniqueProps = Array.from(new Map(allProps.map(item => [item.id, item])).values());
-
-        setProperties(uniqueProps);
+        const allProps = [...localPropsWithStats, ...hardcodedPropsWithStats];
+        setProperties(allProps);
       } catch (error) {
         console.error("Failed to load property data:", error);
         setProperties(initialProperties);
@@ -136,48 +90,7 @@ export const PropertyProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const addProperty = async (newProperty: ExtendedProperty) => {
-    // 1. Try Supabase
-    try {
-      const sbPayload = {
-        title: newProperty.title,
-        price: newProperty.price,
-        location: newProperty.location,
-        type: newProperty.type,
-        beds: newProperty.beds,
-        baths: newProperty.baths,
-        sqft: newProperty.sqft,
-        images: newProperty.images,
-        description: newProperty.description,
-        amenities: newProperty.amenities,
-        coords: newProperty.coords,
-        status: newProperty.status || 'available',
-        visits: 0
-      };
-
-      const { data, error } = await supabase
-        .from('properties')
-        .insert([sbPayload])
-        .select();
-
-      if (error) throw error;
-
-      if (data && data[0]) {
-        // Success! Add to state
-        const addedProp: ExtendedProperty = {
-            ...newProperty,
-            id: data[0].id.toString(),
-            supabaseId: data[0].id,
-            dateAdded: data[0].created_at,
-            isLocal: false
-        };
-        setProperties(prev => [addedProp, ...prev]);
-        return;
-      }
-    } catch (sbError) {
-      console.warn("Supabase insert failed, falling back to local storage:", sbError);
-    }
-
-    // 2. Fallback to Local Storage
+    // Local Storage only (demo mode)
     const propertyWithMeta = {
       ...newProperty,
       id: newProperty.id || Date.now().toString(),
@@ -190,48 +103,17 @@ export const PropertyProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const updateProperty = async (id: string, updates: Partial<ExtendedProperty>) => {
-    // Check if it's a Supabase property
-    const target = properties.find(p => p.id === id);
-    
-    if (target?.supabaseId || (target && !target.isLocal && !initialProperties.find(ip => ip.id === id))) {
-       // Try Supabase Update
-       try {
-         const { error } = await supabase
-           .from('properties')
-           .update(updates)
-           .eq('id', target.supabaseId || id);
-           
-         if (error) throw error;
-       } catch (e) {
-         console.error("Supabase update failed:", e);
-       }
-    }
-
-    // Update Local State & Storage
+    // Update Local State & Storage (demo mode)
     const updatedProps = properties.map(p => 
       p.id === id ? { ...p, ...updates } : p
     );
     
-    // Split into local vs non-local for storage saving
-    const localOnly = updatedProps.filter(p => p.isLocal);
-    localStorage.setItem('kb_properties', JSON.stringify(localOnly));
-    setProperties(updatedProps);
+    saveLocalProperties(updatedProps);
   };
 
   const deleteProperty = async (id: string) => {
-     // Check if Supabase
-     const target = properties.find(p => p.id === id);
-     if (target?.supabaseId) {
-        try {
-            await supabase.from('properties').delete().eq('id', target.supabaseId);
-        } catch (e) {
-            console.error("Supabase delete failed:", e);
-        }
-     }
-
     const updatedProps = properties.filter(p => p.id !== id);
-    saveLocalProperties(updatedProps); // This only saves isLocal=true ones
-    setProperties(updatedProps);
+    saveLocalProperties(updatedProps);
   };
 
 

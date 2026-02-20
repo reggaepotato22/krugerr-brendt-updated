@@ -1,9 +1,5 @@
 // API Base URL - Change this to your actual domain in production
 // For local dev without a PHP server, this will likely fail unless you mock it or run a PHP server on port 8000
-import { supabase } from './supabase';
-
-// API Base URL - Change this to your actual domain in production
-// For local dev without a PHP server, this will likely fail unless you mock it or run a PHP server on port 8000
 const API_BASE = '/api'; 
 
 // Helper to check if response is valid JSON
@@ -30,42 +26,20 @@ export const api = {
 
   uploadImage: async (file: File) => {
     try {
-        // 1. Try Supabase Storage
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { data, error } = await supabase.storage
-            .from('properties')
-            .upload(filePath, file);
-
-        if (error) throw error;
-
-        if (data) {
-            const { data: { publicUrl } } = supabase.storage
-                .from('properties')
-                .getPublicUrl(filePath);
-            return { url: publicUrl };
-        }
-    } catch (e) {
-        console.warn("Supabase Storage upload failed, trying PHP API...");
-        
-        try {
-            // 2. Try PHP API
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            const res = await fetch(`${API_BASE}/upload.php`, {
-            method: 'POST',
-            body: formData,
-            });
-            
-            if (!res.ok || !isJson(res)) throw new Error("Upload API unavailable");
-            return await res.json();
-        } catch (phpError) {
-             console.warn("All uploads failed, using local preview URL");
-             return { url: URL.createObjectURL(file) }; // Mock upload for local preview
-        }
+      // Try PHP API (if deployed with /api/upload.php)
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const res = await fetch(`${API_BASE}/upload.php`, {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!res.ok || !isJson(res)) throw new Error("Upload API unavailable");
+      return await res.json();
+    } catch (phpError) {
+      console.warn("Image upload API unavailable, using local preview URL (demo mode)");
+      return { url: URL.createObjectURL(file) }; // Local-only preview
     }
   },
 
