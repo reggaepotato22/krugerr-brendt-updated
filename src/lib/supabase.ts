@@ -8,6 +8,12 @@ if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KE
   console.warn('Missing Supabase environment variables. Please check your .env file.');
 }
 
+export const hasSupabaseEnv =
+  !!import.meta.env.VITE_SUPABASE_URL &&
+  !!import.meta.env.VITE_SUPABASE_ANON_KEY &&
+  supabaseUrl !== 'https://placeholder.supabase.co' &&
+  supabaseAnonKey !== 'placeholder';
+
 export const supabase = createClient(
   supabaseUrl,
   supabaseAnonKey

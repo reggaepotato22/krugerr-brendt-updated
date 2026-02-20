@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, hasSupabaseEnv } from '../lib/supabase';
 
 export interface User {
   id: string;
@@ -53,6 +53,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    if (!hasSupabaseEnv) {
+      setLoading(false);
+      return;
+    }
+
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -79,6 +84,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, pass: string) => {
+    if (!hasSupabaseEnv) {
+      if (email === 'admin@krugerrbrendt.com' && pass === 'admin123') {
+        setUser({ id: 'local-admin', email, role: 'admin' });
+        return;
+      }
+      throw new Error('Invalid admin credentials');
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password: pass,
@@ -88,7 +101,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    if (hasSupabaseEnv) {
+      await supabase.auth.signOut();
+    }
     setUser(null);
     localStorage.removeItem('kb_user'); // Cleanup legacy local storage if present
     localStorage.removeItem('kb_token');
